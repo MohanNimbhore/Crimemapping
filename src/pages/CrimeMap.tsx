@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import { MapContainer, TileLayer, CircleMarker, Circle, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import {
-  Eye, EyeOff, Map, Target, AlertTriangle, TrendingUp,
+  Eye, EyeOff, Map as MapIcon, Target, AlertTriangle, TrendingUp,
   ChevronDown, ChevronRight, SlidersHorizontal, X, Layers,
   RefreshCw, ZoomIn,
 } from 'lucide-react';
@@ -361,7 +361,7 @@ export default function CrimeMap() {
             {/* Summary */}
             <div className="rounded-2xl border border-slate-700/50 bg-slate-800/70 p-4">
               <div className="flex items-center gap-2 mb-3">
-                <div className="p-1.5 rounded-lg bg-blue-500/15"><Map className="h-4 w-4 text-blue-400" /></div>
+                <div className="p-1.5 rounded-lg bg-blue-500/15"><MapIcon className="h-4 w-4 text-blue-400" /></div>
                 <h3 className="text-sm font-semibold text-white">Summary</h3>
               </div>
               <div className="grid grid-cols-2 gap-2">

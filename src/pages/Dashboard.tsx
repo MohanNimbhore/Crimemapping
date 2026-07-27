@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { FileText, Target, AlertTriangle, MapPin, RefreshCw, Activity } from 'lucide-react';
 import { PageLoader } from '../components/ui/LoadingSpinner';
 import SparklineCard from '../components/Dashboard/SparklineCard';
@@ -81,6 +81,18 @@ export default function Dashboard() {
     }
   };
 
+  const mapCardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = mapCardRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) { el.classList.add('visible'); obs.disconnect(); }
+    }, { threshold: 0.08 });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
   const applyFilters = useCallback(async () => {
     const result = await api.getCrimes({
       type: filters.type || undefined,
@@ -126,39 +138,42 @@ export default function Dashboard() {
   }));
 
   return (
-    <div className="space-y-5 animate-fade-in">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div className="space-y-6">
+      {/* Page header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-fade-in-down">
         <div>
-          <h1 className="text-2xl font-bold text-white animate-fade-in-up">Command Center</h1>
-          <p className="text-slate-400 mt-0.5 text-sm animate-fade-in-up" style={{ animationDelay: '50ms' }}>
+          <h1 className="text-2xl font-bold text-white tracking-tight">
+            Command Center
+          </h1>
+          <p className="text-slate-400 mt-1 text-sm">
             Crime intelligence and predictive analytics overview
           </p>
         </div>
-        <div className="flex items-center gap-3 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
+        <div className="flex items-center gap-3">
           <button
             onClick={handleRefresh}
             disabled={refreshing}
-            className="flex items-center gap-2 px-3 py-2 text-xs text-slate-400 hover:text-white bg-slate-800/50 hover:bg-slate-700/50 border border-slate-700/50 rounded-xl transition-all btn-press disabled:opacity-50"
+            className="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white bg-slate-800/60 hover:bg-slate-700/60 border border-slate-700/50 rounded-xl transition-all btn-press disabled:opacity-50 shadow-sm"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
             Refresh
           </button>
-          <div className="text-xs text-slate-500 bg-slate-800/50 px-3 py-2 rounded-xl border border-slate-700/50 backdrop-blur-sm">
-            Last updated: {new Date().toLocaleTimeString()}
+          <div className="hidden sm:flex text-xs text-slate-500 bg-slate-800/40 px-3 py-2 rounded-xl border border-slate-700/40">
+            {new Date().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 stagger-children visible">
         <SparklineCard title="Total Crimes" value={stats?.totalCrimes || 0} trend={`${Math.abs(crimeChange)}%`} trendUp={crimeChange < 0} icon={<FileText className="w-5 h-5" />} sparkColor="#3b82f6" sparkData={generateSparkData(stats?.totalCrimes || 100, 50)} subtitle="All recorded incidents" delay={0} />
         <SparklineCard title="Active Hotspots" value={stats?.totalHotspots || 0} trend="12%" trendUp={false} icon={<Target className="w-5 h-5" />} sparkColor="#f97316" sparkData={generateSparkData(30, 15)} subtitle="Identified risk zones" delay={80} />
         <SparklineCard title="Active Alerts" value={stats?.activeAlerts || 0} trend="8%" trendUp={stats?.activeAlerts === 0} icon={<AlertTriangle className="w-5 h-5" />} sparkColor="#ef4444" sparkData={generateSparkData(15, 10)} subtitle="Unread notifications" delay={160} />
         <SparklineCard title="High Risk Areas" value={stats?.highRiskAreas || 0} trend="5%" trendUp={false} icon={<MapPin className="w-5 h-5" />} sparkColor="#a855f7" sparkData={generateSparkData(12, 8)} subtitle="Above 70% risk score" delay={240} />
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 xl:grid-cols-4 gap-4 items-start">
         <div className="xl:col-span-3 flex flex-col gap-4">
-          <div className="bg-slate-800/70 border border-slate-700/50 rounded-2xl overflow-hidden card-lift animate-fade-in-up" style={{ animationDelay: '200ms', opacity: 0 }}>
+          <div ref={mapCardRef} className="bg-slate-800/70 border border-slate-700/50 rounded-2xl overflow-hidden card-lift reveal animate-fade-in-up" style={{ opacity: 0 }}>
             <div className="px-4 py-3.5 border-b border-slate-700/50 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="p-1.5 rounded-lg bg-blue-500/15"><MapPin className="w-4 h-4 text-blue-400" /></div>

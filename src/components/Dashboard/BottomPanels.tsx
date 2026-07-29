@@ -56,7 +56,7 @@ function Panel({ children, delay = 0, className = '' }: { children: React.ReactN
   return (
     <div
       ref={ref}
-      className={`reveal reveal-scale rounded-2xl border border-slate-700/50 bg-slate-800/70 p-4 card-lift ${className}`}
+      className={`reveal reveal-scale rounded-2xl border border-slate-200 dark:border-slate-700/50 bg-white dark:bg-slate-800/70 p-4 card-lift ${className}`}
       style={{ transitionDelay: `${delay}ms` }}
     >
       {children}
@@ -165,7 +165,7 @@ export default function BottomPanels({ trends, typeDistribution, topHotspots, pr
             {topHotspots.map((h, i) => (
               <div
                 key={h.area}
-                className="flex items-center gap-3 rounded-xl bg-slate-900/50 px-3 py-2 hover:bg-slate-700/40 transition-colors"
+                className="flex items-center gap-3 rounded-xl bg-white/80 dark:bg-slate-900/50 px-3 py-2 hover:bg-slate-700/40 transition-colors"
                 style={{ animationDelay: `${i * 60}ms` }}
               >
                 <span
@@ -175,7 +175,7 @@ export default function BottomPanels({ trends, typeDistribution, topHotspots, pr
                   {i + 1}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium text-white truncate">{h.area}</p>
+                  <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{h.area}</p>
                   <p className="text-xs text-slate-500">{h.count} crimes</p>
                 </div>
                 <span className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${riskBadgeClass(h.risk)}`}>
@@ -192,7 +192,7 @@ export default function BottomPanels({ trends, typeDistribution, topHotspots, pr
       {/* Panel 4: Predicted Risk */}
       <div
         ref={progressRef}
-        className="reveal reveal-scale rounded-2xl border border-slate-700/50 bg-slate-800/70 p-4 card-lift"
+        className="reveal reveal-scale rounded-2xl border border-slate-200 dark:border-slate-700/50 bg-white dark:bg-slate-800/70 p-4 card-lift"
         style={{ transitionDelay: '240ms' }}
       >
         <div className="flex items-center justify-between mb-4">
@@ -213,7 +213,7 @@ export default function BottomPanels({ trends, typeDistribution, topHotspots, pr
               return (
                 <div key={p.area}>
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-xs text-slate-300 truncate max-w-[70%]">{p.area}</span>
+                    <span className="text-xs text-slate-600 dark:text-slate-300 truncate max-w-[70%]">{p.area}</span>
                     <span className="text-xs font-bold tabular-nums" style={{ color }}>{p.score}%</span>
                   </div>
                   <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-700/60">

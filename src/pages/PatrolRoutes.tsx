@@ -108,7 +108,7 @@ export default function PatrolRoutes() {
           <Navigation className="h-5 w-5 text-blue-400" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Patrol Routes</h1>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Patrol Routes</h1>
           <p className="text-sm text-slate-400">Nearest-neighbor optimized patrol routes from stations to hotspots</p>
         </div>
       </div>
@@ -126,7 +126,7 @@ export default function PatrolRoutes() {
             <label className="mb-1.5 block text-xs font-semibold text-slate-400">Police Station</label>
             <select
               value={stationIdx} onChange={(e) => setStationIdx(Number(e.target.value))}
-              className="w-full rounded-xl glass-deep border border-slate-700/50 px-3 py-2 text-sm text-white focus:border-blue-500 focus:outline-none appearance-none"
+              className="w-full rounded-xl glass-deep border border-slate-200 dark:border-slate-700/50 px-3 py-2 text-sm text-white focus:border-blue-500 focus:outline-none appearance-none"
             >
               {STATIONS.map((s, i) => <option key={s.name} value={i}>{s.name}</option>)}
             </select>
@@ -136,7 +136,7 @@ export default function PatrolRoutes() {
             <input
               type="text" placeholder="e.g. Night Patrol – Sector A" value={routeName}
               onChange={(e) => setRouteName(e.target.value)}
-              className="w-full rounded-xl glass-deep border border-slate-700/50 px-3 py-2 text-sm text-white focus:border-blue-500 focus:outline-none placeholder:text-slate-600"
+              className="w-full rounded-xl glass-deep border border-slate-200 dark:border-slate-700/50 px-3 py-2 text-sm text-white focus:border-blue-500 focus:outline-none placeholder:text-slate-600"
             />
           </div>
           <button
@@ -174,9 +174,9 @@ export default function PatrolRoutes() {
 
       {/* Route cards */}
       {routes.length === 0 ? (
-        <div className="glass-deep rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center py-24 text-center">
-          <div className="p-4 rounded-full bg-slate-800/60 mb-4"><Route className="h-10 w-10 text-slate-600" /></div>
-          <h3 className="text-lg font-semibold text-slate-300">No patrol routes created</h3>
+        <div className="glass-deep rounded-2xl border border-slate-200 dark:border-slate-700/50 flex flex-col items-center justify-center py-24 text-center">
+          <div className="p-4 rounded-full bg-slate-100 dark:bg-slate-800/60 mb-4"><Route className="h-10 w-10 text-slate-600" /></div>
+          <h3 className="text-lg font-semibold text-slate-600 dark:text-slate-300">No patrol routes created</h3>
           <p className="text-sm text-slate-500 mt-1 max-w-md">Select a station, name your route, and click "Generate Route".</p>
         </div>
       ) : (
@@ -184,7 +184,7 @@ export default function PatrolRoutes() {
           {routes.map((route, i) => (
             <div
               key={route.id}
-              className="glass-deep rounded-2xl border border-slate-700/50 p-5 card-3d animate-fade-in-up"
+              className="glass-deep rounded-2xl border border-slate-200 dark:border-slate-700/50 p-5 card-3d animate-fade-in-up"
               style={{ animationDelay: `${Math.min(i * 50, 400)}ms` }}
             >
               {/* Card header */}
@@ -199,7 +199,7 @@ export default function PatrolRoutes() {
                   <span className={`inline-block rounded-full border px-2 py-0.5 text-xs font-semibold capitalize ${getStatusColor(route.status)}`}>{route.status}</span>
                   <button
                     onClick={() => handleDelete(route.id)} disabled={deletingId === route.id}
-                    className="inline-flex items-center justify-center rounded-xl border border-slate-700/50 p-1.5 text-red-400 hover:bg-red-500/15 hover:border-red-500/40 transition-all btn-press disabled:opacity-60"
+                    className="inline-flex items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700/50 p-1.5 text-red-400 hover:bg-red-500/15 hover:border-red-500/40 transition-all btn-press disabled:opacity-60"
                   >
                     {deletingId === route.id ? <ButtonLoader /> : <Trash2 className="h-4 w-4" />}
                   </button>
@@ -213,7 +213,7 @@ export default function PatrolRoutes() {
                   { label: 'Duration', value: route.estimated_duration !== null ? formatDuration(route.estimated_duration) : '—' },
                   { label: 'Stops', value: String(route.hotspots.length) },
                 ].map(({ label, value }) => (
-                  <div key={label} className="rounded-xl bg-slate-900/60 border border-slate-700/40 p-2.5 text-center">
+                  <div key={label} className="rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/40 p-2.5 text-center">
                     <p className="text-xs text-slate-500">{label}</p>
                     <p className="text-sm font-bold text-white mt-0.5">{value}</p>
                   </div>
@@ -226,7 +226,7 @@ export default function PatrolRoutes() {
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-2 text-sm">
                     <Flag className="h-4 w-4 text-green-400 shrink-0" />
-                    <span className="text-slate-300">Start: {route.station_name}</span>
+                    <span className="text-slate-600 dark:text-slate-300">Start: {route.station_name}</span>
                   </div>
                   {route.hotspots.map((h, idx) => (
                     <div key={idx} className="flex items-center gap-2 text-sm pl-1">
@@ -237,13 +237,13 @@ export default function PatrolRoutes() {
                   ))}
                   <div className="flex items-center gap-2 text-sm">
                     <Flag className="h-4 w-4 text-red-400 shrink-0" />
-                    <span className="text-slate-300">Return: {route.station_name}</span>
+                    <span className="text-slate-600 dark:text-slate-300">Return: {route.station_name}</span>
                   </div>
                 </div>
               </div>
 
               {/* Footer */}
-              <div className="mt-4 pt-3 border-t border-slate-700/40 flex items-center justify-between text-xs text-slate-500">
+              <div className="mt-4 pt-3 border-t border-slate-200 dark:border-slate-700/40 flex items-center justify-between text-xs text-slate-500">
                 <span className="flex items-center gap-1.5"><Activity className="h-3.5 w-3.5" />Created {formatDate(route.created_at)}</span>
                 <span>{crimes.length} crimes on record</span>
               </div>

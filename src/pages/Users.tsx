@@ -42,13 +42,13 @@ export default function Users() {
             <UsersIcon className="h-5 w-5 text-green-400" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-white tracking-tight">User Management</h1>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">User Management</h1>
             <p className="text-sm text-slate-400">Manage system users and their roles</p>
           </div>
         </div>
         <button
           onClick={() => { window.location.href = '/login'; }}
-          className="flex items-center gap-2 rounded-xl glass-deep border border-slate-700/50 px-4 py-2 text-sm font-medium text-slate-300 hover:text-white hover:border-blue-500/40 btn-press transition-all"
+          className="flex items-center gap-2 rounded-xl glass-deep border border-slate-200 dark:border-slate-700/50 px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-white hover:border-blue-500/40 btn-press transition-all"
         >
           <UserPlus className="h-4 w-4" /> Invite User
         </button>
@@ -83,17 +83,17 @@ export default function Users() {
 
       {/* Table */}
       {users.length === 0 ? (
-        <div className="glass-deep rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center py-24 text-center">
-          <div className="p-4 rounded-full bg-slate-800/60 mb-4"><UsersIcon className="h-10 w-10 text-slate-600" /></div>
-          <h3 className="text-lg font-semibold text-slate-300">No users found</h3>
+        <div className="glass-deep rounded-2xl border border-slate-200 dark:border-slate-700/50 flex flex-col items-center justify-center py-24 text-center">
+          <div className="p-4 rounded-full bg-slate-100 dark:bg-slate-800/60 mb-4"><UsersIcon className="h-10 w-10 text-slate-600" /></div>
+          <h3 className="text-lg font-semibold text-slate-600 dark:text-slate-300">No users found</h3>
           <p className="text-sm text-slate-500 mt-1">Users appear here once they sign up through the login page.</p>
         </div>
       ) : (
-        <div className="overflow-hidden rounded-2xl border border-slate-700/50 glass-deep">
+        <div className="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700/50 glass-deep">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-700/60 bg-slate-800/60 text-left">
+                <tr className="border-b border-slate-200 dark:border-slate-700/60 bg-slate-100 dark:bg-slate-800/60 text-left">
                   {['Name','Email','Role','Created At',''].map((h) => (
                     <th key={h} className="px-4 py-3 font-semibold text-slate-400 text-xs uppercase tracking-wider">{h}</th>
                   ))}
@@ -101,7 +101,7 @@ export default function Users() {
               </thead>
               <tbody>
                 {users.map((user, i) => (
-                  <tr key={user.id} className="border-b border-slate-700/40 hover:bg-slate-700/20 transition-colors animate-fade-in-up" style={{ animationDelay: `${Math.min(i * 30, 600)}ms` }}>
+                  <tr key={user.id} className="border-b border-slate-200 dark:border-slate-700/40 hover:bg-slate-700/20 transition-colors animate-fade-in-up" style={{ animationDelay: `${Math.min(i * 30, 600)}ms` }}>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-sm font-bold text-white shadow-lg shadow-blue-500/25 shrink-0">
@@ -113,7 +113,7 @@ export default function Users() {
                         )}
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-slate-300">{user.email}</td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{user.email}</td>
                     <td className="px-4 py-3">
                       <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-semibold capitalize ${user.role === 'admin' ? 'border-purple-500/40 bg-purple-500/10 text-purple-400' : 'border-green-500/40 bg-green-500/10 text-green-400'}`}>
                         {user.role === 'admin' ? <ShieldCheck className="h-3 w-3" /> : <UserIcon className="h-3 w-3" />}
@@ -124,7 +124,7 @@ export default function Users() {
                     <td className="px-4 py-3 text-right">
                       {user.id !== currentUser?.id && (
                         <button onClick={() => setDeleteId(user.id)}
-                          className="inline-flex items-center justify-center rounded-xl border border-slate-700/50 p-1.5 text-red-400 hover:bg-red-500/15 hover:border-red-500/40 transition-all btn-press">
+                          className="inline-flex items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700/50 p-1.5 text-red-400 hover:bg-red-500/15 hover:border-red-500/40 transition-all btn-press">
                           <Trash2 className="h-4 w-4" />
                         </button>
                       )}
@@ -147,7 +147,7 @@ export default function Users() {
             </div>
             <p className="text-sm text-slate-400 mb-5">This removes the user profile from the system. Their auth account is not affected.</p>
             <div className="flex justify-end gap-3">
-              <button onClick={() => setDeleteId(null)} className="rounded-xl glass-deep border border-slate-700/50 px-4 py-2 text-sm font-medium text-slate-300 hover:text-white btn-press">Cancel</button>
+              <button onClick={() => setDeleteId(null)} className="rounded-xl glass-deep border border-slate-200 dark:border-slate-700/50 px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-white btn-press">Cancel</button>
               <button onClick={handleDelete} disabled={deleting}
                 className="flex items-center gap-2 rounded-xl bg-red-600 border border-red-500/30 px-4 py-2 text-sm font-semibold text-white hover:bg-red-500 disabled:opacity-60 btn-press">
                 {deleting ? <ButtonLoader /> : <Trash2 className="h-4 w-4" />} Delete

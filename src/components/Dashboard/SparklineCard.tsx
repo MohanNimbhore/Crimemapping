@@ -63,7 +63,7 @@ export default function SparklineCard({
   return (
     <div
       ref={cardRef}
-      className="reveal reveal-scale stat-card rounded-2xl border border-slate-700/50 bg-slate-800/70 p-4 card-lift overflow-hidden relative"
+      className="reveal reveal-scale stat-card rounded-2xl border border-slate-200 dark:border-slate-700/50 bg-white dark:bg-slate-800/70 p-4 card-lift overflow-hidden relative"
       style={{ transitionDelay: `${delay}ms` }}
     >
       {/* subtle top glow strip */}
@@ -81,7 +81,7 @@ export default function SparklineCard({
             <span style={{ color: sparkColor }}>{icon}</span>
           </div>
           <div>
-            <p className="text-sm font-semibold text-slate-300">{title}</p>
+            <p className="text-sm font-semibold text-slate-600 dark:text-slate-300">{title}</p>
             <p className="text-xs text-slate-500 mt-0.5">{subtitle}</p>
           </div>
         </div>
@@ -89,7 +89,7 @@ export default function SparklineCard({
 
       <div className="mt-3 flex items-end justify-between gap-3">
         <div>
-          <p className="text-3xl font-bold text-white tabular-nums tracking-tight">
+          <p className="text-3xl font-bold text-slate-900 dark:text-white tabular-nums tracking-tight">
             {typeof value === 'number' ? displayValue.toLocaleString() : value}
           </p>
           <div className={`mt-1.5 flex items-center gap-1 text-xs font-semibold ${trendUp ? 'text-emerald-400' : 'text-red-400'}`}>

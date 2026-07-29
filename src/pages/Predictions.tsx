@@ -102,13 +102,13 @@ export default function Predictions() {
             <BrainCircuit className="h-5 w-5 text-purple-400" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-white tracking-tight">AI Predictions</h1>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">AI Predictions</h1>
             <p className="text-sm text-slate-400">Risk scoring based on crime density, severity, time, and type</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
           {predictions.length > 0 && (
-            <button onClick={handleClear} className="flex items-center gap-2 rounded-xl glass-deep border border-slate-700/50 px-4 py-2 text-sm font-medium text-slate-300 hover:text-white hover:border-red-500/30 transition-all btn-press">
+            <button onClick={handleClear} className="flex items-center gap-2 rounded-xl glass-deep border border-slate-200 dark:border-slate-700/50 px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-white hover:border-red-500/30 transition-all btn-press">
               <Trash2 className="h-4 w-4" /> Clear All
             </button>
           )}
@@ -141,7 +141,7 @@ export default function Predictions() {
               <input
                 type="number" step="any" placeholder={placeholder} value={val}
                 onChange={(e) => set(e.target.value)}
-                className="w-full rounded-xl glass-deep border border-slate-700/50 px-3 py-2 text-sm text-white focus:border-purple-500 focus:outline-none placeholder:text-slate-600"
+                className="w-full rounded-xl glass-deep border border-slate-200 dark:border-slate-700/50 px-3 py-2 text-sm text-white focus:border-purple-500 focus:outline-none placeholder:text-slate-600"
               />
             </div>
           ))}
@@ -177,19 +177,19 @@ export default function Predictions() {
 
       {/* Table */}
       {predictions.length === 0 ? (
-        <div className="glass-deep rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center py-24 text-center">
-          <div className="p-4 rounded-full bg-slate-800/60 mb-4">
+        <div className="glass-deep rounded-2xl border border-slate-200 dark:border-slate-700/50 flex flex-col items-center justify-center py-24 text-center">
+          <div className="p-4 rounded-full bg-slate-100 dark:bg-slate-800/60 mb-4">
             <Sparkles className="h-10 w-10 text-slate-600" />
           </div>
-          <h3 className="text-lg font-semibold text-slate-300">No predictions generated</h3>
+          <h3 className="text-lg font-semibold text-slate-600 dark:text-slate-300">No predictions generated</h3>
           <p className="text-sm text-slate-500 mt-1 max-w-md">Click "Generate Predictions" to analyze {crimes.length} crime records.</p>
         </div>
       ) : (
-        <div className="overflow-hidden rounded-2xl border border-slate-700/50 glass-deep">
+        <div className="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700/50 glass-deep">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-700/60 bg-slate-800/60 text-left">
+                <tr className="border-b border-slate-200 dark:border-slate-700/60 bg-slate-100 dark:bg-slate-800/60 text-left">
                   {['Area','Location','Risk Score','Risk Level','Confidence','Factors'].map((h) => (
                     <th key={h} className="px-4 py-3 font-semibold text-slate-400 text-xs uppercase tracking-wider">{h}</th>
                   ))}
@@ -199,7 +199,7 @@ export default function Predictions() {
                 {predictions.map((pred, i) => {
                   const col = scoreBarColor(pred.risk_score);
                   return (
-                    <tr key={pred.id} className="border-b border-slate-700/40 hover:bg-slate-700/20 transition-colors animate-fade-in-up" style={{ animationDelay: `${Math.min(i * 30, 600)}ms` }}>
+                    <tr key={pred.id} className="border-b border-slate-200 dark:border-slate-700/40 hover:bg-slate-700/20 transition-colors animate-fade-in-up" style={{ animationDelay: `${Math.min(i * 30, 600)}ms` }}>
                       <td className="px-4 py-3 font-semibold text-white">
                         <div className="flex items-center gap-2"><MapPin className="h-4 w-4 text-slate-500 shrink-0" />{pred.area_name}</div>
                       </td>
@@ -215,12 +215,12 @@ export default function Predictions() {
                       <td className="px-4 py-3">
                         <span className={`inline-block rounded-full border px-2.5 py-0.5 text-xs font-semibold capitalize ${getRiskLevelColor(pred.risk_level)}`}>{pred.risk_level}</span>
                       </td>
-                      <td className="px-4 py-3 font-semibold text-slate-300">{pred.confidence_score !== null ? `${pred.confidence_score}%` : '—'}</td>
+                      <td className="px-4 py-3 font-semibold text-slate-600 dark:text-slate-300">{pred.confidence_score !== null ? `${pred.confidence_score}%` : '—'}</td>
                       <td className="px-4 py-3">
                         {pred.factors && (
                           <div className="flex flex-wrap gap-1">
                             {Object.entries(pred.factors).slice(0, 3).map(([k, v]) => (
-                              <span key={k} className="rounded-lg bg-slate-800/80 border border-slate-700/50 px-2 py-0.5 text-xs text-slate-400">{k}: {String(v)}</span>
+                              <span key={k} className="rounded-lg bg-slate-800/80 border border-slate-200 dark:border-slate-700/50 px-2 py-0.5 text-xs text-slate-400">{k}: {String(v)}</span>
                             ))}
                           </div>
                         )}

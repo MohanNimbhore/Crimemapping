@@ -23,7 +23,7 @@ function sevBorder(s: string) {
     case 'critical': return 'border-red-500/40 bg-red-500/5';
     case 'high':     return 'border-orange-500/40 bg-orange-500/5';
     case 'medium':   return 'border-yellow-500/40 bg-yellow-500/5';
-    default:         return 'border-slate-700/50 bg-slate-800/30';
+    default:         return 'border-slate-200 dark:border-slate-700/50 bg-slate-800/30';
   }
 }
 
@@ -62,7 +62,7 @@ export default function Alerts() {
           <BellRing className="h-5 w-5 text-red-400" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Alerts</h1>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Alerts</h1>
           <p className="text-sm text-slate-400">Monitor and acknowledge crime alerts across zones</p>
         </div>
       </div>
@@ -87,11 +87,11 @@ export default function Alerts() {
 
       {/* Alert list */}
       {alerts.length === 0 ? (
-        <div className="glass-deep rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center py-24 text-center">
-          <div className="p-4 rounded-full bg-slate-800/60 mb-4">
+        <div className="glass-deep rounded-2xl border border-slate-200 dark:border-slate-700/50 flex flex-col items-center justify-center py-24 text-center">
+          <div className="p-4 rounded-full bg-slate-100 dark:bg-slate-800/60 mb-4">
             <Bell className="h-10 w-10 text-slate-600" />
           </div>
-          <h3 className="text-lg font-semibold text-slate-300">No alerts found</h3>
+          <h3 className="text-lg font-semibold text-slate-600 dark:text-slate-300">No alerts found</h3>
           <p className="text-sm text-slate-500 mt-1 max-w-xs">Alerts will appear here when high-risk crime patterns are detected.</p>
         </div>
       ) : (
@@ -103,12 +103,12 @@ export default function Alerts() {
               <div
                 key={alert.id}
                 className={`flex items-center gap-4 rounded-2xl border p-4 transition-all animate-fade-in-up ${
-                  unread ? sevBorder(alert.severity) : 'border-slate-700/40 bg-slate-800/30 opacity-70 hover:opacity-90'
+                  unread ? sevBorder(alert.severity) : 'border-slate-200 dark:border-slate-700/40 bg-slate-50 dark:bg-slate-800/30 opacity-70 hover:opacity-90'
                 }`}
                 style={{ animationDelay: `${Math.min(i * 30, 600)}ms` }}
               >
                 {/* Icon */}
-                <div className={`rounded-xl p-2.5 flex-shrink-0 ${unread ? 'bg-red-500/15 border border-red-500/20' : 'bg-slate-800/50 border border-slate-700/40'}`}>
+                <div className={`rounded-xl p-2.5 flex-shrink-0 ${unread ? 'bg-red-500/15 border border-red-500/20' : 'bg-slate-100 dark:bg-slate-800/50 border border-slate-700/40'}`}>
                   <Icon className={`h-5 w-5 ${unread ? 'text-red-400' : 'text-slate-500'}`} />
                 </div>
 
@@ -117,7 +117,7 @@ export default function Alerts() {
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-sm font-semibold text-white">{alert.alert_type}</span>
                     <span className="text-xs text-slate-600">·</span>
-                    <span className="text-sm text-slate-300">{alert.area_name}</span>
+                    <span className="text-sm text-slate-600 dark:text-slate-300">{alert.area_name}</span>
                     {unread && (
                       <span className="rounded-full bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 animate-pulse-subtle">NEW</span>
                     )}
@@ -135,7 +135,7 @@ export default function Alerts() {
                     <button
                       onClick={() => handleMarkAsRead(alert.id)}
                       disabled={markingId === alert.id}
-                      className="flex items-center gap-1.5 rounded-xl border border-slate-600/50 bg-slate-800/60 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:border-green-500/40 hover:text-green-400 transition-all btn-press disabled:opacity-50"
+                      className="flex items-center gap-1.5 rounded-xl border border-slate-300 dark:border-slate-600/50 bg-slate-100 dark:bg-slate-800/60 px-3 py-1.5 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:border-green-500/40 hover:text-green-400 transition-all btn-press disabled:opacity-50"
                     >
                       {markingId === alert.id ? <ButtonLoader /> : <CheckCircle2 className="h-4 w-4" />}
                       Mark Read

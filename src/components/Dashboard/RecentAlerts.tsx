@@ -51,7 +51,7 @@ export default function RecentAlerts({ alerts }: { alerts: Alert[] }) {
   return (
     <div
       ref={containerRef}
-      className="reveal rounded-2xl border border-slate-700/50 bg-slate-800/70 p-4 card-lift h-full"
+      className="reveal rounded-2xl border border-slate-200 dark:border-slate-700/50 bg-white dark:bg-slate-800/70 p-4 card-lift h-full"
     >
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">

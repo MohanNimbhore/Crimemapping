@@ -60,7 +60,7 @@ export default function Analytics() {
           <BarChart3 className="h-5 w-5 text-blue-400" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Analytics</h1>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Analytics</h1>
           <p className="text-sm text-slate-400">Crime statistics, trends, and distribution analysis</p>
         </div>
       </div>
@@ -86,7 +86,7 @@ export default function Analytics() {
       {/* Charts */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         {/* Bar – by type */}
-        <div className="glass-deep rounded-2xl border border-slate-700/50 p-5 card-3d animate-fade-in-up" style={{ animationDelay: '80ms' }}>
+        <div className="glass-deep rounded-2xl border border-slate-200 dark:border-slate-700/50 p-5 card-3d animate-fade-in-up" style={{ animationDelay: '80ms' }}>
           <div className="flex items-center gap-2.5 mb-5">
             <div className="p-1.5 rounded-lg bg-blue-500/15 border border-blue-500/20">
               <Activity className="h-4 w-4 text-blue-400" />
@@ -107,7 +107,7 @@ export default function Analytics() {
         </div>
 
         {/* Pie – by severity */}
-        <div className="glass-deep rounded-2xl border border-slate-700/50 p-5 card-3d animate-fade-in-up" style={{ animationDelay: '120ms' }}>
+        <div className="glass-deep rounded-2xl border border-slate-200 dark:border-slate-700/50 p-5 card-3d animate-fade-in-up" style={{ animationDelay: '120ms' }}>
           <div className="flex items-center gap-2.5 mb-5">
             <div className="p-1.5 rounded-lg bg-orange-500/15 border border-orange-500/20">
               <PieIcon className="h-4 w-4 text-orange-400" />
@@ -130,7 +130,7 @@ export default function Analytics() {
         </div>
 
         {/* Area – trends */}
-        <div className="glass-deep rounded-2xl border border-slate-700/50 p-5 card-3d animate-fade-in-up" style={{ animationDelay: '160ms' }}>
+        <div className="glass-deep rounded-2xl border border-slate-200 dark:border-slate-700/50 p-5 card-3d animate-fade-in-up" style={{ animationDelay: '160ms' }}>
           <div className="flex items-center gap-2.5 mb-5">
             <div className="p-1.5 rounded-lg bg-green-500/15 border border-green-500/20">
               <TrendingUp className="h-4 w-4 text-green-400" />
@@ -161,7 +161,7 @@ export default function Analytics() {
         </div>
 
         {/* Bar – monthly */}
-        <div className="glass-deep rounded-2xl border border-slate-700/50 p-5 card-3d animate-fade-in-up" style={{ animationDelay: '200ms' }}>
+        <div className="glass-deep rounded-2xl border border-slate-200 dark:border-slate-700/50 p-5 card-3d animate-fade-in-up" style={{ animationDelay: '200ms' }}>
           <div className="flex items-center gap-2.5 mb-5">
             <div className="p-1.5 rounded-lg bg-purple-500/15 border border-purple-500/20">
               <Calendar className="h-4 w-4 text-purple-400" />

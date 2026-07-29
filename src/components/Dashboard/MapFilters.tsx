@@ -14,7 +14,7 @@ interface MapFiltersProps {
   onApply: () => void;
 }
 
-const selectClass = 'w-full rounded-xl bg-slate-900/80 border border-slate-700/60 px-3 py-2 text-sm text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all appearance-none cursor-pointer hover:border-slate-600';
+const selectClass = 'w-full rounded-xl bg-slate-900/80 border border-slate-200 dark:border-slate-700/60 px-3 py-2 text-sm text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all appearance-none cursor-pointer hover:border-slate-600';
 
 export default function MapFilters({ filters, onChange, onApply }: MapFiltersProps) {
   const ref = useRef<HTMLDivElement>(null);
@@ -37,7 +37,7 @@ export default function MapFilters({ filters, onChange, onApply }: MapFiltersPro
   return (
     <div
       ref={ref}
-      className="reveal reveal-right rounded-2xl border border-slate-700/50 bg-slate-800/70 p-4 card-lift"
+      className="reveal reveal-right rounded-2xl border border-slate-200 dark:border-slate-700/50 bg-white dark:bg-slate-800/70 p-4 card-lift"
     >
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">

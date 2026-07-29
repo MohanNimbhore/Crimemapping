@@ -6,7 +6,7 @@ import { CRIME_TYPES, SEVERITY_LEVELS, CITIES, AREA_NAMES } from '../types';
 import { formatDate, formatTime, getSeverityColor, getStatusColor } from '../lib/utils';
 import { PageLoader, ButtonLoader } from '../components/ui/LoadingSpinner';
 
-const INPUT_CLS = 'w-full rounded-xl glass-deep border border-slate-700/50 px-3 py-2 text-sm text-white focus:border-blue-500 focus:outline-none placeholder:text-slate-600 appearance-none';
+const INPUT_CLS = 'w-full rounded-xl glass-deep border border-slate-200 dark:border-slate-700/50 px-3 py-2 text-sm text-white focus:border-blue-500 focus:outline-none placeholder:text-slate-600 appearance-none';
 const LABEL_CLS = 'mb-1.5 block text-xs font-semibold text-slate-400';
 
 export default function CrimeRecords() {
@@ -69,7 +69,7 @@ export default function CrimeRecords() {
             <ShieldAlert className="h-5 w-5 text-red-400" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-white tracking-tight">Crime Records</h1>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Crime Records</h1>
             <p className="text-sm text-slate-400">Manage and track all recorded crime incidents</p>
           </div>
         </div>
@@ -87,7 +87,7 @@ export default function CrimeRecords() {
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
           <input type="text" placeholder="Search by type, area, city, or description..." value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-xl glass-deep border border-slate-700/50 pl-10 pr-4 py-2 text-sm text-white focus:border-blue-500 focus:outline-none placeholder:text-slate-600"
+            className="w-full rounded-xl glass-deep border border-slate-200 dark:border-slate-700/50 pl-10 pr-4 py-2 text-sm text-white focus:border-blue-500 focus:outline-none placeholder:text-slate-600"
           />
         </div>
         <div className="flex items-center gap-2">
@@ -97,7 +97,7 @@ export default function CrimeRecords() {
             { val: filterCity, set: setFilterCity, opts: ['all', ...CITIES], labels: { all: 'All Cities' } },
           ].map(({ val, set, opts, labels }, i) => (
             <select key={i} value={val} onChange={(e) => set(e.target.value)}
-              className="rounded-xl glass-deep border border-slate-700/50 px-3 py-2 text-sm text-white focus:border-blue-500 focus:outline-none appearance-none cursor-pointer">
+              className="rounded-xl glass-deep border border-slate-200 dark:border-slate-700/50 px-3 py-2 text-sm text-white focus:border-blue-500 focus:outline-none appearance-none cursor-pointer">
               {opts.map((o) => <option key={o} value={o}>{(labels as Record<string,string>)[o] || o}</option>)}
             </select>
           ))}
@@ -106,17 +106,17 @@ export default function CrimeRecords() {
 
       {/* Table */}
       {filtered.length === 0 ? (
-        <div className="glass-deep rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center py-24 text-center">
-          <div className="p-4 rounded-full bg-slate-800/60 mb-4"><FileText className="h-10 w-10 text-slate-600" /></div>
-          <h3 className="text-lg font-semibold text-slate-300">No crime records found</h3>
+        <div className="glass-deep rounded-2xl border border-slate-200 dark:border-slate-700/50 flex flex-col items-center justify-center py-24 text-center">
+          <div className="p-4 rounded-full bg-slate-100 dark:bg-slate-800/60 mb-4"><FileText className="h-10 w-10 text-slate-600" /></div>
+          <h3 className="text-lg font-semibold text-slate-600 dark:text-slate-300">No crime records found</h3>
           <p className="text-sm text-slate-500 mt-1">{crimes.length === 0 ? 'Add your first crime record.' : 'Try adjusting your filters.'}</p>
         </div>
       ) : (
-        <div className="overflow-hidden rounded-2xl border border-slate-700/50 glass-deep">
+        <div className="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700/50 glass-deep">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-700/60 bg-slate-800/60 text-left">
+                <tr className="border-b border-slate-200 dark:border-slate-700/60 bg-slate-100 dark:bg-slate-800/60 text-left">
                   {['Type','Area','City','Date','Severity','Status',''].map((h) => (
                     <th key={h} className="px-4 py-3 font-semibold text-slate-400 text-xs uppercase tracking-wider">{h}</th>
                   ))}
@@ -124,12 +124,12 @@ export default function CrimeRecords() {
               </thead>
               <tbody>
                 {filtered.map((crime, i) => (
-                  <tr key={crime.id} className="border-b border-slate-700/40 hover:bg-slate-700/20 transition-colors animate-fade-in-up" style={{ animationDelay: `${Math.min(i * 20, 600)}ms` }}>
+                  <tr key={crime.id} className="border-b border-slate-200 dark:border-slate-700/40 hover:bg-slate-700/20 transition-colors animate-fade-in-up" style={{ animationDelay: `${Math.min(i * 20, 600)}ms` }}>
                     <td className="px-4 py-3 font-semibold text-white">{crime.crime_type}</td>
-                    <td className="px-4 py-3 text-slate-300">{crime.area_name}</td>
-                    <td className="px-4 py-3 text-slate-300">{crime.city}</td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{crime.area_name}</td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{crime.city}</td>
                     <td className="px-4 py-3">
-                      <div className="text-slate-300">{formatDate(crime.crime_date)}</div>
+                      <div className="text-slate-600 dark:text-slate-300">{formatDate(crime.crime_date)}</div>
                       <div className="text-xs text-slate-500">{formatTime(crime.crime_time)}</div>
                     </td>
                     <td className="px-4 py-3">
@@ -140,7 +140,7 @@ export default function CrimeRecords() {
                     </td>
                     <td className="px-4 py-3 text-right">
                       <button onClick={() => setDeleteId(crime.id)}
-                        className="inline-flex items-center justify-center rounded-xl border border-slate-700/50 p-1.5 text-red-400 hover:bg-red-500/15 hover:border-red-500/40 transition-all btn-press">
+                        className="inline-flex items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700/50 p-1.5 text-red-400 hover:bg-red-500/15 hover:border-red-500/40 transition-all btn-press">
                         <Trash2 className="h-4 w-4" />
                       </button>
                     </td>
@@ -187,7 +187,7 @@ export default function CrimeRecords() {
               </div>
               <div className="flex justify-end gap-3 pt-2">
                 <button type="button" onClick={() => setShowModal(false)}
-                  className="rounded-xl glass-deep border border-slate-700/50 px-4 py-2 text-sm font-medium text-slate-300 hover:text-white transition-all btn-press">Cancel</button>
+                  className="rounded-xl glass-deep border border-slate-200 dark:border-slate-700/50 px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-white transition-all btn-press">Cancel</button>
                 <button type="submit" disabled={submitting}
                   className="flex items-center gap-2 rounded-xl bg-blue-600 border border-blue-500/30 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500 disabled:opacity-60 btn-press">
                   {submitting ? <ButtonLoader /> : <Plus className="h-4 w-4" />} Create Record
@@ -208,7 +208,7 @@ export default function CrimeRecords() {
             </div>
             <p className="text-sm text-slate-400 mb-5">This action cannot be undone. The record will be permanently removed.</p>
             <div className="flex justify-end gap-3">
-              <button onClick={() => setDeleteId(null)} className="rounded-xl glass-deep border border-slate-700/50 px-4 py-2 text-sm font-medium text-slate-300 hover:text-white btn-press">Cancel</button>
+              <button onClick={() => setDeleteId(null)} className="rounded-xl glass-deep border border-slate-200 dark:border-slate-700/50 px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-white btn-press">Cancel</button>
               <button onClick={handleDelete} disabled={deleting}
                 className="flex items-center gap-2 rounded-xl bg-red-600 border border-red-500/30 px-4 py-2 text-sm font-semibold text-white hover:bg-red-500 disabled:opacity-60 btn-press">
                 {deleting ? <ButtonLoader /> : <Trash2 className="h-4 w-4" />} Delete

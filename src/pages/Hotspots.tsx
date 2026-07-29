@@ -139,7 +139,7 @@ export default function Hotspots() {
             <Layers className="h-5 w-5 text-orange-400" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-white tracking-tight">Hotspot Detection</h1>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Hotspot Detection</h1>
             <p className="text-sm text-slate-400">K-Means clustering to identify high-risk crime zones</p>
           </div>
         </div>
@@ -147,7 +147,7 @@ export default function Hotspots() {
           <select
             value={kValue}
             onChange={(e) => setKValue(Number(e.target.value))}
-            className="rounded-xl glass-deep border border-slate-700/50 px-3 py-2 text-sm text-white focus:border-orange-500 focus:outline-none appearance-none cursor-pointer"
+            className="rounded-xl glass-deep border border-slate-200 dark:border-slate-700/50 px-3 py-2 text-sm text-white focus:border-orange-500 focus:outline-none appearance-none cursor-pointer"
           >
             {K_OPTIONS.map((k) => <option key={k} value={k}>K = {k}</option>)}
           </select>
@@ -183,19 +183,19 @@ export default function Hotspots() {
 
       {/* Table */}
       {hotspots.length === 0 ? (
-        <div className="glass-deep rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center py-24 text-center">
-          <div className="p-4 rounded-full bg-slate-800/60 mb-4">
+        <div className="glass-deep rounded-2xl border border-slate-200 dark:border-slate-700/50 flex flex-col items-center justify-center py-24 text-center">
+          <div className="p-4 rounded-full bg-slate-100 dark:bg-slate-800/60 mb-4">
             <Layers className="h-10 w-10 text-slate-600" />
           </div>
-          <h3 className="text-lg font-semibold text-slate-300">No hotspots detected</h3>
+          <h3 className="text-lg font-semibold text-slate-600 dark:text-slate-300">No hotspots detected</h3>
           <p className="text-sm text-slate-500 mt-1 max-w-md">Click "Detect Hotspots" to run K-Means clustering on {crimes.length} crime records.</p>
         </div>
       ) : (
-        <div className="overflow-hidden rounded-2xl border border-slate-700/50 glass-deep">
+        <div className="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700/50 glass-deep">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-700/60 bg-slate-800/60 text-left">
+                <tr className="border-b border-slate-200 dark:border-slate-700/60 bg-slate-100 dark:bg-slate-800/60 text-left">
                   {['Zone','Location','Crime Count','Risk Level','Top Types','Created',''].map((h) => (
                     <th key={h} className="px-4 py-3 font-semibold text-slate-400 text-xs uppercase tracking-wider">{h}</th>
                   ))}
@@ -205,15 +205,15 @@ export default function Hotspots() {
                 {hotspots.map((hs, i) => (
                   <tr
                     key={hs.id}
-                    className={`border-b border-slate-700/40 hover:bg-slate-700/20 transition-colors animate-fade-in-up ${riskGlow(hs.risk_level)}`}
+                    className={`border-b border-slate-200 dark:border-slate-700/40 hover:bg-slate-700/20 transition-colors animate-fade-in-up ${riskGlow(hs.risk_level)}`}
                     style={{ animationDelay: `${Math.min(i * 30, 600)}ms` }}
                   >
                     <td className="px-4 py-3 font-semibold text-white">Zone {i + 1}</td>
                     <td className="px-4 py-3">
-                      <div className="text-white font-medium">{hs.area_name}</div>
+                      <div className="text-slate-700 dark:text-white font-medium">{hs.area_name}</div>
                       <div className="text-xs text-slate-500 mt-0.5">{hs.latitude.toFixed(4)}, {hs.longitude.toFixed(4)}</div>
                     </td>
-                    <td className="px-4 py-3 font-bold text-white tabular-nums">{hs.crime_count}</td>
+                    <td className="px-4 py-3 font-bold text-slate-900 dark:text-white tabular-nums">{hs.crime_count}</td>
                     <td className="px-4 py-3">
                       <span className={`inline-block rounded-full border px-2.5 py-0.5 text-xs font-semibold capitalize ${getRiskLevelColor(hs.risk_level)}`}>
                         {hs.risk_level}
@@ -222,7 +222,7 @@ export default function Hotspots() {
                     <td className="px-4 py-3">
                       <div className="flex flex-wrap gap-1">
                         {hs.crime_types && Object.entries(hs.crime_types).sort(([,a],[,b]) => b-a).slice(0,3).map(([t, c]) => (
-                          <span key={t} className="inline-block rounded-lg bg-slate-800/80 border border-slate-700/60 px-2 py-0.5 text-xs text-slate-300">
+                          <span key={t} className="inline-block rounded-lg bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 px-2 py-0.5 text-xs text-slate-600 dark:text-slate-300">
                             {t} ({c})
                           </span>
                         ))}
@@ -233,7 +233,7 @@ export default function Hotspots() {
                       <button
                         onClick={() => handleDelete(hs.id)}
                         disabled={deletingId === hs.id}
-                        className="inline-flex items-center justify-center rounded-xl border border-slate-700/50 p-1.5 text-red-400 hover:bg-red-500/15 hover:border-red-500/40 transition-all btn-press disabled:opacity-60"
+                        className="inline-flex items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700/50 p-1.5 text-red-400 hover:bg-red-500/15 hover:border-red-500/40 transition-all btn-press disabled:opacity-60"
                       >
                         {deletingId === hs.id ? <ButtonLoader /> : <Trash2 className="h-4 w-4" />}
                       </button>

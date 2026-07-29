@@ -18,6 +18,15 @@ function getAlertIcon(type: string): typeof Bell {
   return ALERT_ICONS[type] || Bell;
 }
 
+function sevBorder(s: string) {
+  switch (s) {
+    case 'critical': return 'border-red-500/40 bg-red-500/5';
+    case 'high':     return 'border-orange-500/40 bg-orange-500/5';
+    case 'medium':   return 'border-yellow-500/40 bg-yellow-500/5';
+    default:         return 'border-slate-700/50 bg-slate-800/30';
+  }
+}
+
 export default function Alerts() {
   const [loading, setLoading] = useState(true);
   const [alerts, setAlerts] = useState<Alert[]>([]);
@@ -25,28 +34,18 @@ export default function Alerts() {
 
   const fetchAlerts = useCallback(async () => {
     setLoading(true);
-    try {
-      const data = await api.getAlerts({});
-      setAlerts(data);
-    } finally {
-      setLoading(false);
-    }
+    try { setAlerts(await api.getAlerts({})); }
+    finally { setLoading(false); }
   }, []);
 
-  useEffect(() => {
-    fetchAlerts();
-  }, [fetchAlerts]);
+  useEffect(() => { fetchAlerts(); }, [fetchAlerts]);
 
   const handleMarkAsRead = async (id: string) => {
     setMarkingId(id);
     try {
       const updated = await api.markAlertAsRead(id);
       setAlerts((prev) => prev.map((a) => (a.id === id ? updated : a)));
-    } catch (err) {
-      console.error('Failed to mark alert as read:', err);
-    } finally {
-      setMarkingId(null);
-    }
+    } finally { setMarkingId(null); }
   };
 
   const totalAlerts = alerts.length;
@@ -56,109 +55,90 @@ export default function Alerts() {
   if (loading) return <PageLoader />;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6 animate-fade-in">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Alerts</h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400">Monitor and acknowledge crime alerts across zones</p>
+      <div className="flex items-center gap-3">
+        <div className="p-2 rounded-xl bg-red-500/15 glow-red border border-red-500/20">
+          <BellRing className="h-5 w-5 text-red-400" />
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold text-white tracking-tight">Alerts</h1>
+          <p className="text-sm text-slate-400">Monitor and acknowledge crime alerts across zones</p>
+        </div>
       </div>
 
-      {/* Stats Cards */}
+      {/* Stat cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 card-lift">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Total Alerts</p>
-              <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-white">{totalAlerts}</p>
+        {[
+          { label: 'Total Alerts', value: totalAlerts, icon: <Bell className="h-5 w-5" />, color: '#3b82f6', glow: 'glow-blue', border: 'border-blue-500/20' },
+          { label: 'Unread',       value: unreadCount, icon: <BellRing className="h-5 w-5" />, color: '#ef4444', glow: 'glow-red', border: 'border-red-500/20' },
+          { label: 'Read',         value: readCount,   icon: <BellOff className="h-5 w-5" />, color: '#22c55e', glow: 'glow-green', border: 'border-green-500/20' },
+        ].map(({ label, value, icon, color, glow, border }, i) => (
+          <div key={label} className={`card-3d glass-deep rounded-2xl border ${border} ${glow} p-5 animate-fade-in-up`} style={{ animationDelay: `${i * 60}ms` }}>
+            <div className="flex items-center justify-between mb-3">
+              <span style={{ color }}>{icon}</span>
+              <div className="h-1.5 w-1.5 rounded-full animate-pulse-subtle" style={{ background: color }} />
             </div>
-            <div className="rounded-lg bg-blue-100 dark:bg-blue-950/30 p-2.5">
-              <Bell className="h-5 w-5 text-blue-500" />
-            </div>
+            <p className="text-3xl font-bold tabular-nums stat-3d" style={{ color }}>{value}</p>
+            <p className="text-xs text-slate-400 mt-1 font-medium">{label}</p>
           </div>
-        </div>
-        <div className="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 card-lift">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Unread</p>
-              <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-white">{unreadCount}</p>
-            </div>
-            <div className="rounded-lg bg-red-100 dark:bg-red-950/30 p-2.5">
-              <BellRing className="h-5 w-5 text-red-500" />
-            </div>
-          </div>
-        </div>
-        <div className="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 card-lift">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Read</p>
-              <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-white">{readCount}</p>
-            </div>
-            <div className="rounded-lg bg-green-100 dark:bg-green-950/30 p-2.5">
-              <BellOff className="h-5 w-5 text-green-500" />
-            </div>
-          </div>
-        </div>
+        ))}
       </div>
 
-      {/* Alert List */}
+      {/* Alert list */}
       {alerts.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 text-center">
-          <Bell className="h-12 w-12 text-slate-300 dark:text-slate-600 mb-3" />
-          <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300">No alerts found</h3>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Alerts will appear here when high-risk crime patterns are detected.
-          </p>
+        <div className="glass-deep rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center py-24 text-center">
+          <div className="p-4 rounded-full bg-slate-800/60 mb-4">
+            <Bell className="h-10 w-10 text-slate-600" />
+          </div>
+          <h3 className="text-lg font-semibold text-slate-300">No alerts found</h3>
+          <p className="text-sm text-slate-500 mt-1 max-w-xs">Alerts will appear here when high-risk crime patterns are detected.</p>
         </div>
       ) : (
         <div className="space-y-2">
           {alerts.map((alert, i) => {
             const Icon = getAlertIcon(alert.alert_type);
+            const unread = !alert.is_read;
             return (
               <div
                 key={alert.id}
-                className={`flex items-center gap-4 rounded-xl border p-4 animate-fade-in-up ${
-                  alert.is_read
-                    ? 'border-slate-200 dark:border-slate-700/50 bg-white dark:bg-slate-900/50'
-                    : 'border-orange-300 dark:border-orange-700/50 bg-orange-50 dark:bg-orange-950/20'
+                className={`flex items-center gap-4 rounded-2xl border p-4 transition-all animate-fade-in-up ${
+                  unread ? sevBorder(alert.severity) : 'border-slate-700/40 bg-slate-800/30 opacity-70 hover:opacity-90'
                 }`}
                 style={{ animationDelay: `${Math.min(i * 30, 600)}ms` }}
               >
                 {/* Icon */}
-                <div className={`rounded-lg p-2.5 flex-shrink-0 ${
-                  alert.is_read
-                    ? 'bg-slate-100 dark:bg-slate-800'
-                    : 'bg-orange-100 dark:bg-orange-950/40'
-                }`}>
-                  <Icon className={`h-5 w-5 ${alert.is_read ? 'text-slate-400' : 'text-orange-500'}`} />
+                <div className={`rounded-xl p-2.5 flex-shrink-0 ${unread ? 'bg-red-500/15 border border-red-500/20' : 'bg-slate-800/50 border border-slate-700/40'}`}>
+                  <Icon className={`h-5 w-5 ${unread ? 'text-red-400' : 'text-slate-500'}`} />
                 </div>
 
                 {/* Content */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-sm font-semibold text-slate-900 dark:text-white">{alert.alert_type}</span>
-                    <span className="text-xs text-slate-500 dark:text-slate-400">·</span>
-                    <span className="text-sm text-slate-600 dark:text-slate-300">{alert.area_name}</span>
-                    {!alert.is_read && (
-                      <span className="rounded-full bg-orange-500 text-white text-xs px-1.5 py-0.5">NEW</span>
+                    <span className="text-sm font-semibold text-white">{alert.alert_type}</span>
+                    <span className="text-xs text-slate-600">·</span>
+                    <span className="text-sm text-slate-300">{alert.area_name}</span>
+                    {unread && (
+                      <span className="rounded-full bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 animate-pulse-subtle">NEW</span>
                     )}
                   </div>
-                  <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5 truncate">{alert.message}</p>
-                  <p className="text-xs text-slate-400 mt-1">{formatDate(alert.created_at)}</p>
+                  <p className="text-sm text-slate-400 mt-0.5 truncate">{alert.message}</p>
+                  <p className="text-xs text-slate-600 mt-1">{formatDate(alert.created_at)}</p>
                 </div>
 
-                {/* Severity + Action */}
+                {/* Severity + action */}
                 <div className="flex items-center gap-3 flex-shrink-0">
-                  <span className={`inline-block rounded-full border px-2 py-0.5 text-xs font-medium capitalize ${getSeverityColor(alert.severity)}`}>
+                  <span className={`inline-block rounded-full border px-2 py-0.5 text-xs font-semibold capitalize ${getSeverityColor(alert.severity)}`}>
                     {alert.severity}
                   </span>
-                  {!alert.is_read ? (
+                  {unread ? (
                     <button
                       onClick={() => handleMarkAsRead(alert.id)}
                       disabled={markingId === alert.id}
-                      className="flex items-center gap-1.5 rounded-lg border border-slate-300 dark:border-slate-700 px-3 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-60"
+                      className="flex items-center gap-1.5 rounded-xl border border-slate-600/50 bg-slate-800/60 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:border-green-500/40 hover:text-green-400 transition-all btn-press disabled:opacity-50"
                     >
                       {markingId === alert.id ? <ButtonLoader /> : <CheckCircle2 className="h-4 w-4" />}
-                      Mark as Read
+                      Mark Read
                     </button>
                   ) : (
                     <CheckCircle2 className="h-5 w-5 text-green-500" />

@@ -6,7 +6,7 @@ import { CRIME_TYPES, SEVERITY_LEVELS, CITIES, AREA_NAMES } from '../types';
 import { formatDate, formatTime, getSeverityColor, getStatusColor } from '../lib/utils';
 import { PageLoader, ButtonLoader } from '../components/ui/LoadingSpinner';
 
-const INPUT_CLS = 'w-full rounded-xl glass-deep border border-slate-200 dark:border-slate-700/50 px-3 py-2 text-sm text-white focus:border-blue-500 focus:outline-none placeholder:text-slate-600 appearance-none';
+const INPUT_CLS = 'w-full rounded-xl glass-deep border border-slate-200 dark:border-slate-700/50 px-3 py-2 text-sm text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none placeholder:text-slate-600 appearance-none';
 const LABEL_CLS = 'mb-1.5 block text-xs font-semibold text-slate-400';
 
 export default function CrimeRecords() {
@@ -75,7 +75,7 @@ export default function CrimeRecords() {
         </div>
         <button
           onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 rounded-xl bg-blue-600 border border-blue-500/30 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500 btn-press glow-blue transition-all"
+          className="flex items-center gap-2 rounded-xl bg-blue-600 border border-blue-500/30 px-4 py-2 text-sm font-semibold text-slate-900 dark:text-white hover:bg-blue-500 btn-press glow-blue transition-all"
         >
           <Plus className="h-4 w-4" /> Add Crime
         </button>
@@ -87,7 +87,7 @@ export default function CrimeRecords() {
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
           <input type="text" placeholder="Search by type, area, city, or description..." value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-xl glass-deep border border-slate-200 dark:border-slate-700/50 pl-10 pr-4 py-2 text-sm text-white focus:border-blue-500 focus:outline-none placeholder:text-slate-600"
+            className="w-full rounded-xl glass-deep border border-slate-200 dark:border-slate-700/50 pl-10 pr-4 py-2 text-sm text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500"
           />
         </div>
         <div className="flex items-center gap-2">
@@ -97,7 +97,7 @@ export default function CrimeRecords() {
             { val: filterCity, set: setFilterCity, opts: ['all', ...CITIES], labels: { all: 'All Cities' } },
           ].map(({ val, set, opts, labels }, i) => (
             <select key={i} value={val} onChange={(e) => set(e.target.value)}
-              className="rounded-xl glass-deep border border-slate-200 dark:border-slate-700/50 px-3 py-2 text-sm text-white focus:border-blue-500 focus:outline-none appearance-none cursor-pointer">
+              className="rounded-xl glass-deep border border-slate-200 dark:border-slate-700/50 px-3 py-2 text-sm text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none appearance-none cursor-pointer">
               {opts.map((o) => <option key={o} value={o}>{(labels as Record<string,string>)[o] || o}</option>)}
             </select>
           ))}
@@ -125,7 +125,7 @@ export default function CrimeRecords() {
               <tbody>
                 {filtered.map((crime, i) => (
                   <tr key={crime.id} className="border-b border-slate-200 dark:border-slate-700/40 hover:bg-slate-700/20 transition-colors animate-fade-in-up" style={{ animationDelay: `${Math.min(i * 20, 600)}ms` }}>
-                    <td className="px-4 py-3 font-semibold text-white">{crime.crime_type}</td>
+                    <td className="px-4 py-3 font-semibold text-slate-900 dark:text-white">{crime.crime_type}</td>
                     <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{crime.area_name}</td>
                     <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{crime.city}</td>
                     <td className="px-4 py-3">
@@ -159,7 +159,7 @@ export default function CrimeRecords() {
             <div className="flex items-center justify-between mb-5">
               <div className="flex items-center gap-2.5">
                 <div className="p-1.5 rounded-lg bg-blue-500/15 border border-blue-500/20"><Plus className="h-4 w-4 text-blue-400" /></div>
-                <h2 className="text-lg font-bold text-white">Add Crime Record</h2>
+                <h2 className="text-lg font-bold text-slate-900 dark:text-white">Add Crime Record</h2>
               </div>
               <button onClick={() => setShowModal(false)} className="rounded-xl p-1.5 text-slate-400 hover:text-white hover:bg-slate-700/50 transition-all">
                 <X className="h-5 w-5" />
@@ -189,7 +189,7 @@ export default function CrimeRecords() {
                 <button type="button" onClick={() => setShowModal(false)}
                   className="rounded-xl glass-deep border border-slate-200 dark:border-slate-700/50 px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-white transition-all btn-press">Cancel</button>
                 <button type="submit" disabled={submitting}
-                  className="flex items-center gap-2 rounded-xl bg-blue-600 border border-blue-500/30 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500 disabled:opacity-60 btn-press">
+                  className="flex items-center gap-2 rounded-xl bg-blue-600 border border-blue-500/30 px-4 py-2 text-sm font-semibold text-slate-900 dark:text-white hover:bg-blue-500 disabled:opacity-60 btn-press">
                   {submitting ? <ButtonLoader /> : <Plus className="h-4 w-4" />} Create Record
                 </button>
               </div>
@@ -204,13 +204,13 @@ export default function CrimeRecords() {
           <div className="w-full max-w-sm glass-deep rounded-2xl border border-red-500/20 p-6 animate-pop-in shadow-2xl shadow-red-500/10 neon-pulse-red" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center gap-3 mb-4">
               <div className="rounded-full bg-red-500/15 border border-red-500/25 p-2.5"><Trash2 className="h-5 w-5 text-red-400" /></div>
-              <h3 className="text-lg font-bold text-white">Delete Crime Record?</h3>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">Delete Crime Record?</h3>
             </div>
             <p className="text-sm text-slate-400 mb-5">This action cannot be undone. The record will be permanently removed.</p>
             <div className="flex justify-end gap-3">
               <button onClick={() => setDeleteId(null)} className="rounded-xl glass-deep border border-slate-200 dark:border-slate-700/50 px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-white btn-press">Cancel</button>
               <button onClick={handleDelete} disabled={deleting}
-                className="flex items-center gap-2 rounded-xl bg-red-600 border border-red-500/30 px-4 py-2 text-sm font-semibold text-white hover:bg-red-500 disabled:opacity-60 btn-press">
+                className="flex items-center gap-2 rounded-xl bg-red-600 border border-red-500/30 px-4 py-2 text-sm font-semibold text-slate-900 dark:text-white hover:bg-red-500 disabled:opacity-60 btn-press">
                 {deleting ? <ButtonLoader /> : <Trash2 className="h-4 w-4" />} Delete
               </button>
             </div>

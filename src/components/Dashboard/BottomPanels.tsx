@@ -92,7 +92,7 @@ export default function BottomPanels({ trends, typeDistribution, topHotspots, pr
           <div className="p-1.5 rounded-lg bg-violet-500/15">
             <TrendingUp className="h-4 w-4 text-violet-400" />
           </div>
-          <h3 className="text-sm font-semibold text-white">Crime Trend</h3>
+          <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Crime Trend</h3>
         </div>
         <div className="h-48">
           <ResponsiveContainer width="100%" height="100%">
@@ -119,7 +119,7 @@ export default function BottomPanels({ trends, typeDistribution, topHotspots, pr
           <div className="p-1.5 rounded-lg bg-blue-500/15">
             <PieIcon className="h-4 w-4 text-blue-400" />
           </div>
-          <h3 className="text-sm font-semibold text-white">Crime by Category</h3>
+          <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Crime by Category</h3>
         </div>
         <div className="h-36">
           {typeDistribution.length > 0 ? (
@@ -154,7 +154,7 @@ export default function BottomPanels({ trends, typeDistribution, topHotspots, pr
             <div className="p-1.5 rounded-lg bg-orange-500/15">
               <MapPin className="h-4 w-4 text-orange-400" />
             </div>
-            <h3 className="text-sm font-semibold text-white">Top Hotspots</h3>
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Top Hotspots</h3>
           </div>
           <Link to="/hotspots" className="flex items-center gap-1 text-xs font-medium text-blue-400 hover:text-blue-300 transition-colors">
             View All <ArrowRight className="h-3 w-3" />
@@ -169,7 +169,7 @@ export default function BottomPanels({ trends, typeDistribution, topHotspots, pr
                 style={{ animationDelay: `${i * 60}ms` }}
               >
                 <span
-                  className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg text-xs font-bold text-white"
+                  className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg text-xs font-bold text-slate-900 dark:text-white"
                   style={{ background: `linear-gradient(135deg, ${i < 1 ? '#ef4444' : i < 3 ? '#f97316' : '#3b82f6'}, ${i < 1 ? '#dc2626' : i < 3 ? '#ea580c' : '#2563eb'})` }}
                 >
                   {i + 1}
@@ -200,7 +200,7 @@ export default function BottomPanels({ trends, typeDistribution, topHotspots, pr
             <div className="p-1.5 rounded-lg bg-purple-500/15">
               <BrainCircuit className="h-4 w-4 text-purple-400" />
             </div>
-            <h3 className="text-sm font-semibold text-white">Predicted Risk</h3>
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Predicted Risk</h3>
           </div>
           <Link to="/predictions" className="flex items-center gap-1 text-xs font-medium text-blue-400 hover:text-blue-300 transition-colors">
             View All <ArrowRight className="h-3 w-3" />

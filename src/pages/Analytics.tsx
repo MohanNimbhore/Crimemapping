@@ -91,7 +91,7 @@ export default function Analytics() {
             <div className="p-1.5 rounded-lg bg-blue-500/15 border border-blue-500/20">
               <Activity className="h-4 w-4 text-blue-400" />
             </div>
-            <h3 className="text-sm font-semibold text-white">Crimes by Type</h3>
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Crimes by Type</h3>
           </div>
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={typeData} margin={{ left: 10, right: 10, top: 0, bottom: 0 }}>
@@ -112,7 +112,7 @@ export default function Analytics() {
             <div className="p-1.5 rounded-lg bg-orange-500/15 border border-orange-500/20">
               <PieIcon className="h-4 w-4 text-orange-400" />
             </div>
-            <h3 className="text-sm font-semibold text-white">Crimes by Severity</h3>
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Crimes by Severity</h3>
           </div>
           {severityData.length === 0 ? (
             <div className="flex items-center justify-center h-[280px] text-sm text-slate-500">No data</div>
@@ -135,7 +135,7 @@ export default function Analytics() {
             <div className="p-1.5 rounded-lg bg-green-500/15 border border-green-500/20">
               <TrendingUp className="h-4 w-4 text-green-400" />
             </div>
-            <h3 className="text-sm font-semibold text-white">Crime Trends Over Time</h3>
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Crime Trends Over Time</h3>
           </div>
           {trendData.length === 0 ? (
             <div className="flex items-center justify-center h-[280px] text-sm text-slate-500">No data</div>
@@ -166,7 +166,7 @@ export default function Analytics() {
             <div className="p-1.5 rounded-lg bg-purple-500/15 border border-purple-500/20">
               <Calendar className="h-4 w-4 text-purple-400" />
             </div>
-            <h3 className="text-sm font-semibold text-white">Monthly Distribution</h3>
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Monthly Distribution</h3>
           </div>
           {monthlyData.length === 0 ? (
             <div className="flex items-center justify-center h-[280px] text-sm text-slate-500">No data</div>

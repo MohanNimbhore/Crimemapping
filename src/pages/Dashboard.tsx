@@ -113,7 +113,7 @@ export default function Dashboard() {
           {seeding ? (
             <>
               <Activity className="w-8 h-8 text-blue-400 animate-pulse mx-auto mb-3" />
-              <p className="text-slate-400 text-sm">Initializing crime database...</p>
+              <p className="text-slate-500 dark:text-slate-400 text-sm">Initializing crime database...</p>
             </>
           ) : (
             <PageLoader />
@@ -145,7 +145,7 @@ export default function Dashboard() {
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
             Command Center
           </h1>
-          <p className="text-slate-400 mt-1 text-sm">
+          <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm">
             Crime intelligence and predictive analytics overview
           </p>
         </div>
@@ -177,7 +177,7 @@ export default function Dashboard() {
             <div className="px-4 py-3.5 border-b border-slate-200 dark:border-slate-700/50 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="p-1.5 rounded-lg bg-blue-500/15"><MapPin className="w-4 h-4 text-blue-400" /></div>
-                <h2 className="text-sm font-semibold text-white">Crime Activity Map</h2>
+                <h2 className="text-sm font-semibold text-slate-900 dark:text-white">Crime Activity Map</h2>
               </div>
               <div className="flex items-center gap-2 text-xs text-slate-400">
                 <span className="relative flex h-2 w-2">

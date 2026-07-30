@@ -141,7 +141,7 @@ function SidebarContent({ collapsed, location, navigate, user, logout, isAdmin, 
       <div className={`py-3 border-t border-slate-200 dark:border-slate-700/50 ${collapsed ? 'px-2 flex flex-col items-center gap-2' : 'px-3'}`}>
         <div className={`flex items-center gap-3 rounded-xl transition-all duration-200 ${collapsed ? 'px-1 py-2 flex-col' : 'px-3.5 py-2.5 bg-slate-100 dark:bg-slate-800/40'}`}>
           <div className="flex items-center justify-center w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg flex-shrink-0 animate-pop-in">
-            <span className="text-xs font-semibold text-white">{user?.name?.charAt(0)?.toUpperCase() || 'U'}</span>
+            <span className="text-xs font-semibold text-slate-900 dark:text-white">{user?.name?.charAt(0)?.toUpperCase() || 'U'}</span>
           </div>
           {!collapsed && (
             <div className="flex-1 min-w-0 animate-fade-in">

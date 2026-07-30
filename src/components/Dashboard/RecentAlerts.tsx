@@ -58,7 +58,7 @@ export default function RecentAlerts({ alerts }: { alerts: Alert[] }) {
           <div className="p-1.5 rounded-lg bg-red-500/15 animate-pulse-subtle">
             <Bell className="h-4 w-4 text-red-400" />
           </div>
-          <h3 className="text-sm font-semibold text-white">Recent Alerts</h3>
+          <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Recent Alerts</h3>
           {alerts.length > 0 && (
             <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] font-bold text-white animate-pop-in">
               {alerts.length > 9 ? '9+' : alerts.length}
@@ -90,7 +90,7 @@ export default function RecentAlerts({ alerts }: { alerts: Alert[] }) {
                   {alertIcon(alert.alert_type)}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs font-semibold text-white capitalize truncate leading-snug">
+                  <p className="text-xs font-semibold text-slate-900 dark:text-white capitalize truncate leading-snug">
                     {alert.alert_type.replace(/_/g, ' ')}
                   </p>
                   <p className="text-[11px] text-slate-400 truncate mt-0.5">{alert.area_name}</p>

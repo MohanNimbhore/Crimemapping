@@ -31,14 +31,14 @@ export default function Modal({ open, onClose, title, children, maxWidth = 'max-
       onClick={onClose}
     >
       <div
-        className={`relative w-full ${maxWidth} rounded-2xl border border-slate-700/50 bg-slate-900/90 backdrop-blur-xl shadow-2xl animate-pop-in`}
+        className={`relative w-full ${maxWidth} rounded-2xl border border-slate-200 dark:border-slate-700/50 bg-white dark:bg-slate-900/90 backdrop-blur-xl shadow-2xl animate-pop-in`}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between border-b border-slate-700/50 px-6 py-4">
-          <h2 className="text-lg font-semibold text-white">{title}</h2>
+        <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700/50 px-6 py-4">
+          <h2 className="text-lg font-semibold text-slate-900 dark:text-white">{title}</h2>
           <button
             onClick={onClose}
-            className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-800 hover:text-white"
+            className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-white"
             aria-label="Close"
           >
             <X className="h-5 w-5" />

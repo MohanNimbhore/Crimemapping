@@ -147,14 +147,14 @@ export default function Hotspots() {
           <select
             value={kValue}
             onChange={(e) => setKValue(Number(e.target.value))}
-            className="rounded-xl glass-deep border border-slate-200 dark:border-slate-700/50 px-3 py-2 text-sm text-white focus:border-orange-500 focus:outline-none appearance-none cursor-pointer"
+            className="rounded-xl glass-deep border border-slate-200 dark:border-slate-700/50 px-3 py-2 text-sm text-slate-900 dark:text-white focus:border-orange-500 focus:outline-none appearance-none cursor-pointer"
           >
             {K_OPTIONS.map((k) => <option key={k} value={k}>K = {k}</option>)}
           </select>
           <button
             onClick={handleDetect}
             disabled={detecting || crimes.length === 0}
-            className="flex items-center gap-2 rounded-xl bg-orange-600 border border-orange-500/30 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-500 disabled:opacity-60 btn-press glow-orange transition-all"
+            className="flex items-center gap-2 rounded-xl bg-orange-600 border border-orange-500/30 px-4 py-2 text-sm font-semibold text-slate-900 dark:text-white hover:bg-orange-500 disabled:opacity-60 btn-press glow-orange transition-all"
           >
             {detecting ? <ButtonLoader /> : <Zap className="h-4 w-4" />}
             Detect Hotspots
@@ -208,7 +208,7 @@ export default function Hotspots() {
                     className={`border-b border-slate-200 dark:border-slate-700/40 hover:bg-slate-700/20 transition-colors animate-fade-in-up ${riskGlow(hs.risk_level)}`}
                     style={{ animationDelay: `${Math.min(i * 30, 600)}ms` }}
                   >
-                    <td className="px-4 py-3 font-semibold text-white">Zone {i + 1}</td>
+                    <td className="px-4 py-3 font-semibold text-slate-900 dark:text-white">Zone {i + 1}</td>
                     <td className="px-4 py-3">
                       <div className="text-slate-700 dark:text-white font-medium">{hs.area_name}</div>
                       <div className="text-xs text-slate-500 mt-0.5">{hs.latitude.toFixed(4)}, {hs.longitude.toFixed(4)}</div>

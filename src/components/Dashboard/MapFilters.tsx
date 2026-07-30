@@ -14,7 +14,7 @@ interface MapFiltersProps {
   onApply: () => void;
 }
 
-const selectClass = 'w-full rounded-xl bg-slate-900/80 border border-slate-200 dark:border-slate-700/60 px-3 py-2 text-sm text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all appearance-none cursor-pointer hover:border-slate-600';
+const selectClass = 'w-full rounded-xl bg-slate-900/80 border border-slate-200 dark:border-slate-700/60 px-3 py-2 text-sm text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all appearance-none cursor-pointer hover:border-slate-600';
 
 export default function MapFilters({ filters, onChange, onApply }: MapFiltersProps) {
   const ref = useRef<HTMLDivElement>(null);
@@ -44,7 +44,7 @@ export default function MapFilters({ filters, onChange, onApply }: MapFiltersPro
           <div className="p-1.5 rounded-lg bg-blue-500/15">
             <SlidersHorizontal className="h-4 w-4 text-blue-400" />
           </div>
-          <h3 className="text-sm font-semibold text-white">Filters</h3>
+          <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Filters</h3>
         </div>
         {hasFilters && (
           <button onClick={reset} className="flex items-center gap-1 text-xs text-slate-400 hover:text-white transition-colors btn-press">
@@ -80,7 +80,7 @@ export default function MapFilters({ filters, onChange, onApply }: MapFiltersPro
 
         <button
           onClick={onApply}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 btn-press hover:shadow-blue-500/30 hover:from-blue-500 hover:to-blue-400 transition-all"
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 py-2.5 text-sm font-semibold text-slate-900 dark:text-white shadow-lg shadow-blue-500/20 btn-press hover:shadow-blue-500/30 hover:from-blue-500 hover:to-blue-400 transition-all"
         >
           <Filter className="h-4 w-4" />
           Apply Filters

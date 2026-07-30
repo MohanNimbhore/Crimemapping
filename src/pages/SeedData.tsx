@@ -20,13 +20,13 @@ export default function SeedData() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-slate-800 border border-slate-700 rounded-xl p-8 text-center">
+    <div className="min-h-screen bg-slate-100 dark:bg-slate-950 flex items-center justify-center p-4">
+      <div className="max-w-md w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-8 text-center">
         <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center mx-auto mb-4">
           <Database className="w-8 h-8 text-white" />
         </div>
-        <h1 className="text-2xl font-bold text-white mb-2">Database Seeding</h1>
-        <p className="text-slate-400 mb-6">
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Database Seeding</h1>
+        <p className="text-slate-500 dark:text-slate-400 mb-6">
           Click below to populate the database with sample crime data (500 records), alerts, and predictions.
         </p>
 

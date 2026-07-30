@@ -129,11 +129,11 @@ export default function DashboardMap({ crimes, hotspots, center }: DashboardMapP
             >
               <Popup>
                 <div className="text-sm space-y-1 min-w-[160px]">
-                  <p className="font-bold text-white">{cl.count === 1 ? cl.crimes[0].crime_type : `${cl.count} crimes`}</p>
+                  <p className="font-bold text-slate-900 dark:text-white">{cl.count === 1 ? cl.crimes[0].crime_type : `${cl.count} crimes`}</p>
                   {cl.count === 1 ? (
                     <>
                       <p className="text-slate-300">{cl.crimes[0].area_name}</p>
-                      <p className="text-slate-400 text-xs">{cl.crimes[0].crime_date}</p>
+                      <p className="text-slate-500 dark:text-slate-400 text-xs">{cl.crimes[0].crime_date}</p>
                     </>
                   ) : (
                     <p className="text-slate-300 text-xs">Top: {cl.crimes[0].crime_type}</p>
@@ -169,7 +169,7 @@ export default function DashboardMap({ crimes, hotspots, center }: DashboardMapP
             >
               <Popup>
                 <div className="text-sm space-y-1 min-w-[160px]">
-                  <p className="font-bold text-white">{hs.area_name}</p>
+                  <p className="font-bold text-slate-900 dark:text-white">{hs.area_name}</p>
                   <p className="text-slate-300">{hs.crime_count} crimes</p>
                   <span
                     className="inline-block rounded-full px-2 py-0.5 text-[10px] font-bold uppercase"
@@ -202,7 +202,7 @@ export default function DashboardMap({ crimes, hotspots, center }: DashboardMapP
         </button>
         <button
           onClick={() => navigate('/map')}
-          className="flex items-center gap-1.5 rounded-lg bg-slate-900/70 backdrop-blur border border-slate-600/50 px-2.5 py-1.5 text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/70 transition-all btn-press"
+          className="flex items-center gap-1.5 rounded-lg bg-slate-900/70 backdrop-blur border border-slate-600/50 px-2.5 py-1.5 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-white hover:bg-slate-800/70 transition-all btn-press"
         >
           <Maximize2 className="h-3 w-3" />
           Expand
@@ -210,7 +210,7 @@ export default function DashboardMap({ crimes, hotspots, center }: DashboardMapP
       </div>
 
       {/* Stats pill — top left */}
-      <div className="absolute left-3 top-3 z-[1000] flex items-center gap-1.5 rounded-lg bg-slate-900/75 backdrop-blur border border-slate-700/60 px-3 py-1.5 text-xs font-medium text-slate-300">
+      <div className="absolute left-3 top-3 z-[1000] flex items-center gap-1.5 rounded-lg bg-slate-900/75 backdrop-blur border border-slate-700/60 px-3 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300">
         <Layers className="h-3 w-3 text-blue-400" />
         <span>{crimes.length} incidents</span>
         <span className="text-slate-600">·</span>
@@ -218,12 +218,12 @@ export default function DashboardMap({ crimes, hotspots, center }: DashboardMapP
       </div>
 
       {/* Legend — bottom left */}
-      <div className="absolute bottom-3 left-3 z-[1000] rounded-xl bg-slate-900/80 backdrop-blur border border-slate-700/50 px-3 py-2.5 text-xs text-white space-y-1.5">
-        <p className="font-semibold text-slate-300 mb-1">Severity</p>
+      <div className="absolute bottom-3 left-3 z-[1000] rounded-xl bg-white/90 dark:bg-slate-900/80 backdrop-blur border border-slate-200 dark:border-slate-700/50 px-3 py-2.5 text-xs text-slate-700 dark:text-white space-y-1.5">
+        <p className="font-semibold text-slate-600 dark:text-slate-300 mb-1">Severity</p>
         {[['#ef4444', 'Critical'], ['#f97316', 'High'], ['#eab308', 'Medium'], ['#22c55e', 'Low']].map(([color, label]) => (
           <div key={label} className="flex items-center gap-2">
             <span className="h-2.5 w-2.5 rounded-full shrink-0" style={{ background: color }} />
-            <span className="text-slate-400">{label}</span>
+            <span className="text-slate-500 dark:text-slate-400">{label}</span>
           </div>
         ))}
       </div>

@@ -183,7 +183,7 @@ export default function CrimeMap() {
           <select
             value={crimeType}
             onChange={(e) => setCrimeType(e.target.value)}
-            className="rounded-xl glass-deep border border-slate-200 dark:border-slate-700/40 px-3 py-2 text-xs text-white outline-none focus:border-blue-500 focus:glow-blue appearance-none cursor-pointer"
+            className="rounded-xl glass-deep border border-slate-200 dark:border-slate-700/40 px-3 py-2 text-xs text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:glow-blue appearance-none cursor-pointer"
           >
             <option value="">All Crime Types</option>
             {CRIME_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
@@ -192,7 +192,7 @@ export default function CrimeMap() {
           <select
             value={city}
             onChange={(e) => setCity(e.target.value)}
-            className="rounded-xl glass-deep border border-slate-200 dark:border-slate-700/40 px-3 py-2 text-xs text-white outline-none focus:border-blue-500 appearance-none cursor-pointer"
+            className="rounded-xl glass-deep border border-slate-200 dark:border-slate-700/40 px-3 py-2 text-xs text-slate-900 dark:text-white outline-none focus:border-blue-500 appearance-none cursor-pointer"
           >
             <option value="">All Cities</option>
             {(region === 'gujarat' ? GUJARAT : CITIES).map((c) => <option key={c} value={c}>{c}</option>)}
@@ -261,9 +261,9 @@ export default function CrimeMap() {
                     {cl.count === 1 ? (
                       <>
                         <p className="text-slate-600 dark:text-slate-300 text-xs">{cl.crimes[0].area_name}, {cl.crimes[0].city}</p>
-                        <p className="text-slate-400 text-xs">{cl.crimes[0].crime_date} · {cl.crimes[0].crime_time}</p>
+                        <p className="text-slate-500 dark:text-slate-400 text-xs">{cl.crimes[0].crime_date} · {cl.crimes[0].crime_time}</p>
                         {cl.crimes[0].description && (
-                          <p className="text-slate-400 text-xs border-t border-slate-700 pt-1">{cl.crimes[0].description}</p>
+                          <p className="text-slate-500 dark:text-slate-400 text-xs border-t border-slate-700 pt-1">{cl.crimes[0].description}</p>
                         )}
                       </>
                     ) : (
@@ -272,7 +272,7 @@ export default function CrimeMap() {
                           cl.crimes.reduce((acc, c) => { acc[c.crime_type] = (acc[c.crime_type] || 0) + 1; return acc; }, {} as Record<string, number>)
                         ).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([t, n]) => (
                           <div key={t} className="flex justify-between gap-3 text-xs text-slate-600 dark:text-slate-300">
-                            <span>{t}</span><span className="text-slate-400 font-semibold">{n}</span>
+                            <span>{t}</span><span className="text-slate-500 dark:text-slate-400 font-semibold">{n}</span>
                           </div>
                         ))}
                       </div>
@@ -322,13 +322,13 @@ export default function CrimeMap() {
         <div className="absolute left-4 top-4 z-[1000] flex items-center gap-2 map-overlay rounded-xl px-3 py-2 text-xs font-medium text-slate-200 neon-pulse">
           <Layers className="h-3.5 w-3.5 text-blue-400" />
           <span className="text-slate-900 dark:text-white font-semibold">{filtered.length}</span>
-          <span className="text-slate-400">incidents</span>
+          <span className="text-slate-500 dark:text-slate-400">incidents</span>
           <span className="text-slate-600 mx-1">·</span>
           <span className="text-slate-900 dark:text-white font-semibold">{clusters.length}</span>
-          <span className="text-slate-400">clusters</span>
+          <span className="text-slate-500 dark:text-slate-400">clusters</span>
           <span className="text-slate-600 mx-1">·</span>
           <span className="text-slate-900 dark:text-white font-semibold">{filteredHotspots.length}</span>
-          <span className="text-slate-400">zones</span>
+          <span className="text-slate-500 dark:text-slate-400">zones</span>
         </div>
 
         {/* ── Layer toggles top-right ─── */}
@@ -418,7 +418,7 @@ export default function CrimeMap() {
             <div className="p-1.5 rounded-lg bg-red-500/15 border border-red-500/20">
               <Shield className="h-4 w-4 text-red-400" />
             </div>
-            <h3 className="text-sm font-semibold text-white">Severity Breakdown</h3>
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Severity Breakdown</h3>
           </div>
           <div className="space-y-3">
             {(['critical', 'high', 'medium', 'low'] as const).map((s) => {
@@ -459,7 +459,7 @@ export default function CrimeMap() {
             <div className="p-1.5 rounded-lg bg-purple-500/15 border border-purple-500/20">
               <BarChart3 className="h-4 w-4 text-purple-400" />
             </div>
-            <h3 className="text-sm font-semibold text-white">Top Crime Types</h3>
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Top Crime Types</h3>
           </div>
           {byType.length > 0 ? (
             <div className="space-y-2.5">
@@ -493,7 +493,7 @@ export default function CrimeMap() {
             <div className="p-1.5 rounded-lg bg-orange-500/15 border border-orange-500/20">
               <TrendingUp className="h-4 w-4 text-orange-400" />
             </div>
-            <h3 className="text-sm font-semibold text-white">Hot Zones</h3>
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Hot Zones</h3>
           </div>
           {filteredHotspots.length > 0 ? (
             <div className="space-y-2">

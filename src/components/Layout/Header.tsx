@@ -64,7 +64,7 @@ export default function Header({ alertCount = 0 }: HeaderProps) {
           </button>
           <div className="flex items-center gap-2.5 pl-2 lg:pl-3 border-l border-slate-200 dark:border-slate-700/50">
             <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/20 animate-pop-in ring-2 ring-white dark:ring-slate-800">
-              <span className="text-xs font-semibold text-white">{user?.name?.charAt(0)?.toUpperCase() || 'U'}</span>
+              <span className="text-xs font-semibold text-slate-900 dark:text-white">{user?.name?.charAt(0)?.toUpperCase() || 'U'}</span>
             </div>
             <div className="hidden xl:block animate-fade-in">
               <p className="text-sm font-medium text-slate-900 dark:text-white">{user?.name || 'User'}</p>

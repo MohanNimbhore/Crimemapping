@@ -104,10 +104,10 @@ export default function Users() {
                   <tr key={user.id} className="border-b border-slate-200 dark:border-slate-700/40 hover:bg-slate-700/20 transition-colors animate-fade-in-up" style={{ animationDelay: `${Math.min(i * 30, 600)}ms` }}>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-sm font-bold text-white shadow-lg shadow-blue-500/25 shrink-0">
+                        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-sm font-bold text-slate-900 dark:text-white shadow-lg shadow-blue-500/25 shrink-0">
                           {user.name.charAt(0).toUpperCase()}
                         </div>
-                        <span className="font-semibold text-white">{user.name}</span>
+                        <span className="font-semibold text-slate-900 dark:text-white">{user.name}</span>
                         {user.id === currentUser?.id && (
                           <span className="rounded-full bg-blue-500/20 border border-blue-500/30 text-blue-400 text-xs px-1.5 py-0.5 font-semibold">You</span>
                         )}
@@ -143,13 +143,13 @@ export default function Users() {
           <div className="w-full max-w-sm glass-deep rounded-2xl border border-red-500/20 p-6 animate-pop-in shadow-2xl shadow-red-500/10 neon-pulse-red" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center gap-3 mb-4">
               <div className="rounded-full bg-red-500/15 border border-red-500/25 p-2.5"><Trash2 className="h-5 w-5 text-red-400" /></div>
-              <h3 className="text-lg font-bold text-white">Delete User?</h3>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">Delete User?</h3>
             </div>
             <p className="text-sm text-slate-400 mb-5">This removes the user profile from the system. Their auth account is not affected.</p>
             <div className="flex justify-end gap-3">
               <button onClick={() => setDeleteId(null)} className="rounded-xl glass-deep border border-slate-200 dark:border-slate-700/50 px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-white btn-press">Cancel</button>
               <button onClick={handleDelete} disabled={deleting}
-                className="flex items-center gap-2 rounded-xl bg-red-600 border border-red-500/30 px-4 py-2 text-sm font-semibold text-white hover:bg-red-500 disabled:opacity-60 btn-press">
+                className="flex items-center gap-2 rounded-xl bg-red-600 border border-red-500/30 px-4 py-2 text-sm font-semibold text-slate-900 dark:text-white hover:bg-red-500 disabled:opacity-60 btn-press">
                 {deleting ? <ButtonLoader /> : <Trash2 className="h-4 w-4" />} Delete
               </button>
             </div>

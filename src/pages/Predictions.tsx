@@ -115,7 +115,7 @@ export default function Predictions() {
           <button
             onClick={handleGenerate}
             disabled={generating || crimes.length === 0}
-            className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-violet-600 border border-purple-500/30 px-4 py-2 text-sm font-semibold text-white hover:from-purple-500 hover:to-violet-500 disabled:opacity-60 btn-press glow-purple transition-all"
+            className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-violet-600 border border-purple-500/30 px-4 py-2 text-sm font-semibold text-slate-900 dark:text-white hover:from-purple-500 hover:to-violet-500 disabled:opacity-60 btn-press glow-purple transition-all"
           >
             {generating ? <ButtonLoader /> : <Sparkles className="h-4 w-4" />}
             Generate Predictions
@@ -129,7 +129,7 @@ export default function Predictions() {
           <div className="p-1.5 rounded-lg bg-purple-500/15 border border-purple-500/20">
             <Crosshair className="h-4 w-4 text-purple-400" />
           </div>
-          <h3 className="text-sm font-semibold text-white">Custom Location Prediction</h3>
+          <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Custom Location Prediction</h3>
         </div>
         <div className="flex flex-wrap items-end gap-3">
           {[
@@ -141,14 +141,14 @@ export default function Predictions() {
               <input
                 type="number" step="any" placeholder={placeholder} value={val}
                 onChange={(e) => set(e.target.value)}
-                className="w-full rounded-xl glass-deep border border-slate-200 dark:border-slate-700/50 px-3 py-2 text-sm text-white focus:border-purple-500 focus:outline-none placeholder:text-slate-600"
+                className="w-full rounded-xl glass-deep border border-slate-200 dark:border-slate-700/50 px-3 py-2 text-sm text-slate-900 dark:text-white focus:border-purple-500 focus:outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500"
               />
             </div>
           ))}
           <button
             onClick={handleCustomPredict}
             disabled={predicting || !customLat || !customLng}
-            className="flex items-center gap-2 rounded-xl bg-purple-600 border border-purple-500/30 px-4 py-2 text-sm font-semibold text-white hover:bg-purple-500 disabled:opacity-60 btn-press transition-all"
+            className="flex items-center gap-2 rounded-xl bg-purple-600 border border-purple-500/30 px-4 py-2 text-sm font-semibold text-slate-900 dark:text-white hover:bg-purple-500 disabled:opacity-60 btn-press transition-all"
           >
             {predicting ? <ButtonLoader /> : <Target className="h-4 w-4" />}
             Predict
@@ -200,7 +200,7 @@ export default function Predictions() {
                   const col = scoreBarColor(pred.risk_score);
                   return (
                     <tr key={pred.id} className="border-b border-slate-200 dark:border-slate-700/40 hover:bg-slate-700/20 transition-colors animate-fade-in-up" style={{ animationDelay: `${Math.min(i * 30, 600)}ms` }}>
-                      <td className="px-4 py-3 font-semibold text-white">
+                      <td className="px-4 py-3 font-semibold text-slate-900 dark:text-white">
                         <div className="flex items-center gap-2"><MapPin className="h-4 w-4 text-slate-500 shrink-0" />{pred.area_name}</div>
                       </td>
                       <td className="px-4 py-3 text-xs text-slate-500">{pred.latitude.toFixed(4)}, {pred.longitude.toFixed(4)}</td>

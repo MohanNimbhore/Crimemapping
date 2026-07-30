@@ -115,7 +115,7 @@ export default function Alerts() {
                 {/* Content */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-sm font-semibold text-white">{alert.alert_type}</span>
+                    <span className="text-sm font-semibold text-slate-900 dark:text-white">{alert.alert_type}</span>
                     <span className="text-xs text-slate-600">·</span>
                     <span className="text-sm text-slate-600 dark:text-slate-300">{alert.area_name}</span>
                     {unread && (

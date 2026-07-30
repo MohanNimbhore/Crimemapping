@@ -24,19 +24,9 @@ table { border-collapse: separate; border-spacing: 0; }
 .dark ::-webkit-scrollbar-thumb { background: #475569; }
 .dark ::-webkit-scrollbar-thumb:hover { background: #64748b; }
 
-/* ─── Leaflet ────────────────────────────────────────────────── */
-.leaflet-container { background: #e2e8f0 !important; font-family: inherit; }
-.dark .leaflet-container { background: #1e293b !important; }
-.leaflet-popup-content-wrapper { background: #fff; color: #0f172a; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
-.leaflet-popup-tip { background: #fff; }
-.dark .leaflet-popup-content-wrapper { background: #1e293b; color: #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
-.dark .leaflet-popup-tip { background: #1e293b; }
-.leaflet-popup-content { margin: 10px 14px; }
-.leaflet-control-zoom { border: none !important; }
-.leaflet-control-zoom a { background: #fff !important; color: #475569 !important; border: 1px solid #e2e8f0 !important; }
-.leaflet-control-zoom a:hover { background: #f1f5f9 !important; color: #0f172a !important; }
-.dark .leaflet-control-zoom a { background: #1e293b !important; color: #94a3b8 !important; border: 1px solid #334155 !important; }
-.dark .leaflet-control-zoom a:hover { background: #334155 !important; color: #fff !important; }
+/* ─── OpenLayers overrides ───────────────────────────────────── */
+.ol-viewport { font-family: inherit; }
+.ol-attribution { display: none; }
 
 /* ─── Global transition ──────────────────────────────────────── */
 *, *::before, *::after {

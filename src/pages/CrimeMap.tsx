@@ -4,6 +4,7 @@ import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
+import OSM from 'ol/source/OSM';
 import XYZ from 'ol/source/XYZ';
 import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
@@ -145,9 +146,7 @@ export default function CrimeMap() {
     if (!mapRef.current || olMap.current) return;
 
     const isDark = document.documentElement.classList.contains('dark');
-    const tileUrl = isDark
-      ? 'https://{a-c}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-      : 'https://{a-c}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+    const darkUrl = 'https://{a-d}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png';
 
     const crimeSource   = new VectorSource();
     const hotspotSource = new VectorSource();
@@ -166,7 +165,7 @@ export default function CrimeMap() {
     olMap.current = new OLMap({
       target: mapRef.current,
       layers: [
-        new TileLayer({ source: new XYZ({ url: tileUrl, maxZoom: 19, crossOrigin: 'anonymous' }) }),
+        new TileLayer({ source: isDark ? new XYZ({ url: darkUrl, maxZoom: 19, crossOrigin: 'anonymous' }) : new OSM() }),
         hotspotLayerRef.current,
         crimeLayerRef.current,
       ],
@@ -201,15 +200,15 @@ export default function CrimeMap() {
       if (mapRef.current) mapRef.current.style.cursor = hit ? 'pointer' : '';
     });
 
-    // Observe theme changes and swap tile URL
     const observer = new MutationObserver(() => {
       const dark = document.documentElement.classList.contains('dark');
-      const url = dark
-        ? 'https://{a-c}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-        : 'https://{a-c}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
       const layers = olMap.current!.getLayers().getArray();
-      const tile = layers[0] as TileLayer<XYZ>;
-      (tile.getSource() as XYZ).setUrl(url);
+      const tile = layers[0] as TileLayer<OSM | XYZ>;
+      tile.setSource(
+        dark
+          ? new XYZ({ url: 'https://{a-d}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', maxZoom: 19, crossOrigin: 'anonymous' })
+          : new OSM()
+      );
     });
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 

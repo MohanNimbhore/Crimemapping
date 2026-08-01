@@ -5,7 +5,6 @@ import TileLayer from 'ol/layer/Tile';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import OSM from 'ol/source/OSM';
-import XYZ from 'ol/source/XYZ';
 import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
 import Circle from 'ol/geom/Circle';
@@ -145,8 +144,7 @@ export default function CrimeMap() {
   useEffect(() => {
     if (!mapRef.current || olMap.current) return;
 
-    const isDark = document.documentElement.classList.contains('dark');
-    const darkUrl = 'https://{a-d}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png';
+    
 
     const crimeSource   = new VectorSource();
     const hotspotSource = new VectorSource();
@@ -165,7 +163,7 @@ export default function CrimeMap() {
     olMap.current = new OLMap({
       target: mapRef.current,
       layers: [
-        new TileLayer({ source: isDark ? new XYZ({ url: darkUrl, maxZoom: 19, crossOrigin: 'anonymous' }) : new OSM() }),
+        new TileLayer({ source: new OSM() }),
         hotspotLayerRef.current,
         crimeLayerRef.current,
       ],
@@ -201,18 +199,17 @@ export default function CrimeMap() {
     });
 
     const observer = new MutationObserver(() => {
-      const dark = document.documentElement.classList.contains('dark');
-      const layers = olMap.current!.getLayers().getArray();
-      const tile = layers[0] as TileLayer<OSM | XYZ>;
-      tile.setSource(
-        dark
-          ? new XYZ({ url: 'https://{a-d}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', maxZoom: 19, crossOrigin: 'anonymous' })
-          : new OSM()
-      );
+      olMap.current?.updateSize();
     });
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 
+    const resizeObserver = new ResizeObserver(() => {
+      olMap.current?.updateSize();
+    });
+    resizeObserver.observe(mapRef.current);
+
     return () => {
+      resizeObserver.disconnect();
       observer.disconnect();
       olMap.current?.setTarget(undefined);
       olMap.current = null;

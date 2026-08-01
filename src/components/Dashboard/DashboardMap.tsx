@@ -1,6 +1,6 @@
 import { useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Map from 'ol/Map';
+import OLMap from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
 import VectorLayer from 'ol/layer/Vector';
@@ -28,7 +28,7 @@ interface ClusterPoint {
 }
 
 function clusterPoints(points: Crime[], gridSize: number): ClusterPoint[] {
-  const cells = new Map<string, ClusterPoint>();
+  const cells = new globalThis.Map<string, ClusterPoint>();
   for (const p of points) {
     const k = `${Math.floor(p.latitude / gridSize)},${Math.floor(p.longitude / gridSize)}`;
     if (!cells.has(k)) {
@@ -70,7 +70,7 @@ export default function DashboardMap({ crimes, hotspots, center }: DashboardMapP
   const navigate = useNavigate();
   const mapRef = useRef<HTMLDivElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
-  const olMap = useRef<Map | null>(null);
+  const olMap = useRef<OLMap | null>(null);
   const crimeLayer = useRef<VectorLayer<VectorSource> | null>(null);
   const hotspotLayer = useRef<VectorLayer<VectorSource> | null>(null);
   const overlayRef = useRef<Overlay | null>(null);
@@ -102,7 +102,7 @@ export default function DashboardMap({ crimes, hotspots, center }: DashboardMapP
     });
     overlayRef.current = popup;
 
-    olMap.current = new Map({
+    olMap.current = new OLMap({
       target: mapRef.current,
       layers: [
         new TileLayer({ source: new XYZ({ url: tileUrl, maxZoom: 19 }) }),

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
-import Map from 'ol/Map';
+import OLMap from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
 import VectorLayer from 'ol/layer/Vector';
@@ -29,7 +29,7 @@ interface Cluster {
 }
 
 function clusterCrimes(points: Crime[], grid: number): Cluster[] {
-  const cells = new Map<string, Cluster>();
+  const cells = new globalThis.Map<string, Cluster>();
   for (const p of points) {
     const k = `${Math.floor(p.latitude / grid)},${Math.floor(p.longitude / grid)}`;
     if (!cells.has(k)) {
@@ -74,7 +74,7 @@ const TYPE_COLORS = ['#3b82f6','#8b5cf6','#ec4899','#06b6d4','#f97316','#22c55e'
 export default function CrimeMap() {
   const mapRef   = useRef<HTMLDivElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
-  const olMap    = useRef<Map | null>(null);
+  const olMap    = useRef<OLMap | null>(null);
   const crimeLayerRef   = useRef<VectorLayer<VectorSource> | null>(null);
   const hotspotLayerRef = useRef<VectorLayer<VectorSource> | null>(null);
   const overlayRef      = useRef<Overlay | null>(null);
@@ -163,7 +163,7 @@ export default function CrimeMap() {
     });
     overlayRef.current = popup;
 
-    olMap.current = new Map({
+    olMap.current = new OLMap({
       target: mapRef.current,
       layers: [
         new TileLayer({ source: new XYZ({ url: tileUrl, maxZoom: 19, crossOrigin: 'anonymous' }) }),

@@ -18,12 +18,15 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const root = document.documentElement;
+    root.classList.add('theme-switching');
     if (theme === 'dark') {
       root.classList.add('dark');
     } else {
       root.classList.remove('dark');
     }
     localStorage.setItem('cm-theme', theme);
+    const timer = window.setTimeout(() => root.classList.remove('theme-switching'), 450);
+    return () => window.clearTimeout(timer);
   }, [theme]);
 
   const toggleTheme = () => setTheme(t => t === 'dark' ? 'light' : 'dark');

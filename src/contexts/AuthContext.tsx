@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useRef, type ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import { supabase } from '../lib/supabase';
 import type { User } from '../types';
 
@@ -17,7 +17,6 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const signingUp = useRef(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -29,7 +28,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (signingUp.current) return;
       if (session?.user) {
         fetchUserProfile(session.user.id);
       } else {
@@ -63,41 +61,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await fetchUserProfile(data.user.id);
   };
 
-  const signup = async (name: string, email: string, password: string, role: string = 'officer') => {
-    signingUp.current = true;
-    try {
-      const { data, error } = await supabase.auth.signUp({ email, password });
-      if (error) throw new Error(error.message);
-      if (!data.user) throw new Error('Signup failed');
+  const signup = async (name: string, email: string, password: string, _role: string = 'officer') => {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { name } },
+    });
+    if (error) throw new Error(error.message);
+    if (!data.user) throw new Error('Signup failed');
 
-      if (!data.session) {
-        throw new Error('Please check your email to confirm your account, then sign in.');
-      }
-
-      const { data: profile, error: profileError } = await supabase
-        .from('users')
-        .insert({
-          auth_user_id: data.user.id,
-          name,
-          email,
-          role,
-        })
-        .select('id, name, email, role, created_at, updated_at')
-        .maybeSingle();
-
-      if (profileError) {
-        if (profileError.code === '23505') {
-          await fetchUserProfile(data.user.id);
-          return;
-        }
-        throw new Error('Failed to create profile: ' + profileError.message);
-      }
-
-      setUser(profile);
-      setLoading(false);
-    } finally {
-      signingUp.current = false;
+    if (!data.session) {
+      throw new Error('Please check your email to confirm your account, then sign in.');
     }
+
+    // The database trigger handle_new_user automatically creates the profile.
+    // Wait briefly for the trigger to complete, then fetch it.
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    await fetchUserProfile(data.user.id);
   };
 
   const resetPassword = async (email: string) => {

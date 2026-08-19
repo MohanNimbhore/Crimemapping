@@ -173,13 +173,13 @@ export default function Dashboard() {
 
       <div className="grid grid-cols-1 xl:grid-cols-4 gap-4 items-start">
         <div className="xl:col-span-3 flex flex-col gap-4">
-          <div ref={mapCardRef} className="bg-white dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700/50 rounded-2xl overflow-hidden card-lift reveal animate-fade-in-up" style={{ opacity: 0 }}>
-            <div className="px-4 py-3.5 border-b border-slate-200 dark:border-slate-700/50 flex items-center justify-between">
+          <div className="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden card-lift shadow-sm">
+            <div className="px-4 py-3.5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="p-1.5 rounded-lg bg-blue-500/15"><MapPin className="w-4 h-4 text-blue-400" /></div>
-                <h2 className="text-sm font-semibold text-slate-900 dark:text-white">Crime Activity Map</h2>
+                <div className="p-1.5 rounded-lg bg-blue-500/15"><MapPin className="w-4 h-4 text-blue-600 dark:text-blue-400" /></div>
+                <h2 className="text-sm font-bold text-slate-900 dark:text-white">Crime Activity Map</h2>
               </div>
-              <div className="flex items-center gap-2 text-xs text-slate-400">
+              <div className="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />

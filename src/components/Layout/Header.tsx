@@ -63,8 +63,8 @@ export default function Header({ alertCount = 0 }: HeaderProps) {
             {alertCount > 0 && <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-gradient-to-r from-red-500 to-rose-500 rounded-full flex items-center justify-center text-[10px] font-bold text-white shadow-lg animate-pop-in">{alertCount > 9 ? '9+' : alertCount}</span>}
           </button>
           <div className="flex items-center gap-2.5 pl-2 lg:pl-3 border-l border-slate-200 dark:border-slate-700/50">
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/20 animate-pop-in ring-2 ring-white dark:ring-slate-800">
-              <span className="text-xs font-semibold text-slate-900 dark:text-white">{user?.name?.charAt(0)?.toUpperCase() || 'U'}</span>
+            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-md shadow-blue-500/20 ring-2 ring-white dark:ring-slate-800">
+              <span className="text-xs font-bold text-white">{user?.name?.charAt(0)?.toUpperCase() || 'U'}</span>
             </div>
             <div className="hidden xl:block animate-fade-in">
               <p className="text-sm font-medium text-slate-900 dark:text-white">{user?.name || 'User'}</p>

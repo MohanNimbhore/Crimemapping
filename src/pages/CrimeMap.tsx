@@ -12,7 +12,7 @@ import { Style, Fill, Stroke, Circle as CircleStyle, Text } from 'ol/style';
 import Overlay from 'ol/Overlay';
 import { fromLonLat } from 'ol/proj';
 import {
-  Eye, EyeOff, Map as MapIcon, Target, AlertTriangle, TrendingUp,
+  Eye, EyeOff, Map as MapIcon, Target, AlertTriangle,
   X, Layers, RefreshCw, ZoomIn, Shield, Activity, BarChart3,
   ChevronRight, Flame,
 } from 'lucide-react';
@@ -58,6 +58,7 @@ function sevColor(s: string) {
     default:         return '#64748b';
   }
 }
+
 function riskColor(r: string) {
   switch (r) {
     case 'high':   return '#ef4444';
@@ -202,25 +203,18 @@ export default function CrimeMap() {
       if (mapRef.current) mapRef.current.style.cursor = hit ? 'pointer' : '';
     });
 
-    const observer = new MutationObserver(() => {
-      olMap.current?.updateSize();
-    });
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-
     const resizeObserver = new ResizeObserver(() => {
       olMap.current?.updateSize();
     });
     resizeObserver.observe(mapRef.current);
     requestAnimationFrame(() => olMap.current?.updateSize());
-    window.setTimeout(() => olMap.current?.updateSize(), 250);
+    window.setTimeout(() => olMap.current?.updateSize(), 200);
 
     return () => {
       resizeObserver.disconnect();
-      observer.disconnect();
       olMap.current?.setTarget(undefined);
       olMap.current = null;
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /* ── Fly to new center ───────────────────────────────────── */
@@ -230,6 +224,7 @@ export default function CrimeMap() {
       zoom: mapZoom,
       duration: 800,
     });
+    window.setTimeout(() => olMap.current?.updateSize(), 300);
   }, [mapCenter, mapZoom]);
 
   /* ── Sync crime features ─────────────────────────────────── */
@@ -261,15 +256,15 @@ export default function CrimeMap() {
       }, {} as Record<string, number>);
       const topTypes = Object.entries(typeMap).sort((a, b) => b[1] - a[1]).slice(0, 3);
       f.set('html', `
-        <div style="min-width:180px" class="space-y-1.5">
+        <div style="min-width:180px" class="space-y-1.5 p-1">
           <p style="font-weight:700;font-size:13px;color:#0f172a">${cl.count === 1 ? cl.crimes[0].crime_type : `${cl.count} Incidents`}</p>
           ${cl.count === 1 ? `
             <p style="font-size:11px;color:#475569">${cl.crimes[0].area_name}, ${cl.crimes[0].city}</p>
             <p style="font-size:11px;color:#64748b">${cl.crimes[0].crime_date} · ${cl.crimes[0].crime_time}</p>
           ` : topTypes.map(([t, n]) => `
-            <div style="display:flex;justify-content:space-between;font-size:11px;color:#475569"><span>${t}</span><span style="font-weight:600">${n}</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:#475569"><span>${t}</span><span style="font-weight:700">${n}</span></div>
           `).join('')}
-          <span style="display:inline-block;border-radius:9999px;padding:1px 8px;font-size:10px;font-weight:700;text-transform:uppercase;background:${col}33;color:${col};border:1px solid ${col}66">${cl.severity}</span>
+          <span style="display:inline-block;border-radius:9999px;padding:2px 8px;font-size:10px;font-weight:700;text-transform:uppercase;background:${col}22;color:${col};border:1px solid ${col}66">${cl.severity}</span>
         </div>
       `);
       source.addFeature(f);
@@ -283,26 +278,24 @@ export default function CrimeMap() {
     source.clear();
     filteredHotspots.forEach((hs) => {
       const col = riskColor(hs.risk_level);
-      // Circle geometry in EPSG:3857 uses metres
       const center3857 = fromLonLat([hs.longitude, hs.latitude]);
       const radiusM = hs.radius || 1200;
       const f = new Feature({ geometry: new Circle(center3857, radiusM) });
       f.setStyle(new Style({
-        fill: new Fill({ color: col + '1a' }),
+        fill: new Fill({ color: col + '22' }),
         stroke: new Stroke({
           color: col,
           width: hs.risk_level === 'high' ? 2.5 : 1.5,
           lineDash: hs.risk_level !== 'high' ? [6, 5] : undefined,
         }),
       }));
-      // Use a point feature for click detection (circles aren't hit-tested well)
       const pt = new Feature({ geometry: new Point(center3857) });
       pt.setStyle(new Style({ image: new CircleStyle({ radius: 0, fill: new Fill({ color: 'transparent' }) }) }));
       pt.set('html', `
-        <div style="min-width:150px" class="space-y-1">
+        <div style="min-width:150px" class="space-y-1 p-1">
           <p style="font-weight:700;font-size:13px;color:#0f172a">${hs.area_name}</p>
           <p style="font-size:11px;color:#475569">${hs.crime_count} crimes recorded</p>
-          <span style="display:inline-block;border-radius:9999px;padding:1px 8px;font-size:10px;font-weight:700;text-transform:uppercase;background:${col}33;color:${col};border:1px solid ${col}66">${hs.risk_level} risk</span>
+          <span style="display:inline-block;border-radius:9999px;padding:2px 8px;font-size:10px;font-weight:700;text-transform:uppercase;background:${col}22;color:${col};border:1px solid ${col}66">${hs.risk_level} risk</span>
         </div>
       `);
       source.addFeature(f);
@@ -314,14 +307,6 @@ export default function CrimeMap() {
   useEffect(() => { crimeLayerRef.current?.setVisible(showCrimes); }, [showCrimes]);
   useEffect(() => { hotspotLayerRef.current?.setVisible(showHotspots); }, [showHotspots]);
 
-  if (loading) {
-    return (
-      <div className="flex h-[80vh] items-center justify-center">
-        <PageLoader />
-      </div>
-    );
-  }
-
   return (
     <div className="flex flex-col gap-4 animate-fade-in" style={{ minHeight: 'calc(100vh - 80px)' }}>
 
@@ -330,23 +315,23 @@ export default function CrimeMap() {
         <div>
           <div className="flex items-center gap-3 mb-1">
             <div className="p-2 rounded-xl bg-blue-500/15 border border-blue-500/20">
-              <MapIcon className="h-5 w-5 text-blue-400" />
+              <MapIcon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
             </div>
             <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Crime Intelligence Map</h1>
           </div>
-          <p className="text-sm text-slate-500 dark:text-slate-400 ml-12">Real-time incident tracking · Hotspot analysis · Predictive zones</p>
+          <p className="text-sm font-medium text-slate-600 dark:text-slate-400 ml-12">Real-time incident tracking · Hotspot analysis · Predictive zones</p>
         </div>
 
         <div className="flex items-center gap-2 flex-wrap">
-          <div className="flex rounded-xl glass-deep border border-slate-200 dark:border-slate-700/40 p-1 gap-1">
+          <div className="flex rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 p-1 gap-1 shadow-sm">
             {(['gujarat', 'all'] as const).map((r) => (
               <button
                 key={r}
                 onClick={() => { setRegion(r); setCity(''); }}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all btn-press ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all btn-press ${
                   region === r
-                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30'
-                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    ? 'bg-blue-600 text-white shadow-sm'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 {r === 'gujarat' ? 'Gujarat' : 'All India'}
@@ -357,7 +342,7 @@ export default function CrimeMap() {
           <select
             value={crimeType}
             onChange={(e) => setCrimeType(e.target.value)}
-            className="rounded-xl glass-deep border border-slate-200 dark:border-slate-700/40 px-3 py-2 text-xs text-slate-900 dark:text-white outline-none focus:border-blue-500 appearance-none cursor-pointer"
+            className="rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 px-3 py-2 text-xs font-semibold text-slate-900 dark:text-white outline-none focus:border-blue-500 appearance-none cursor-pointer shadow-sm"
           >
             <option value="">All Crime Types</option>
             {CRIME_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
@@ -366,134 +351,146 @@ export default function CrimeMap() {
           <select
             value={city}
             onChange={(e) => setCity(e.target.value)}
-            className="rounded-xl glass-deep border border-slate-200 dark:border-slate-700/40 px-3 py-2 text-xs text-slate-900 dark:text-white outline-none focus:border-blue-500 appearance-none cursor-pointer"
+            className="rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 px-3 py-2 text-xs font-semibold text-slate-900 dark:text-white outline-none focus:border-blue-500 appearance-none cursor-pointer shadow-sm"
           >
             <option value="">All Cities</option>
             {(region === 'gujarat' ? GUJARAT : CITIES).map((c) => <option key={c} value={c}>{c}</option>)}
           </select>
 
           {(crimeType || city) && (
-            <button onClick={reset} className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-red-500/15 border border-red-500/30 text-xs font-semibold text-red-400 hover:bg-red-500/25 transition-all btn-press">
+            <button onClick={reset} className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-red-50 dark:bg-red-500/15 border border-red-200 dark:border-red-500/30 text-xs font-bold text-red-600 dark:text-red-400 hover:bg-red-100 transition-all btn-press shadow-sm">
               <X className="h-3 w-3" /> Clear
             </button>
           )}
 
           <button
             onClick={fetchData}
-            className="p-2 rounded-xl glass-deep border border-slate-200 dark:border-slate-700/40 text-slate-500 dark:text-slate-400 hover:text-blue-400 transition-all btn-press"
+            className="p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:text-blue-500 transition-all btn-press shadow-sm"
+            title="Refresh map data"
           >
-            <RefreshCw className="h-4 w-4" />
+            <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
           </button>
         </div>
       </div>
 
-      {/* ── Map ─────────────────────────────────────────────── */}
-      <div className="relative rounded-2xl overflow-hidden map-frame" style={{ height: '62vh', minHeight: 380 }}>
+      {/* ── Map Container ───────────────────────────────────── */}
+      <div className="relative rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-md bg-slate-100 dark:bg-slate-950" style={{ height: '62vh', minHeight: 420 }}>
 
+        {/* The OpenLayers map target div */}
         <div ref={mapRef} className="h-full w-full" />
+
+        {/* Loading overlay */}
+        {loading && (
+          <div className="absolute inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm">
+            <PageLoader />
+          </div>
+        )}
 
         {/* Popup */}
         <div
           ref={popupRef}
-          className="absolute z-50 hidden rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xl px-3 py-2.5"
-          style={{ transform: 'translateX(-50%)', pointerEvents: 'none' }}
+          className="absolute z-50 hidden rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-2xl px-3 py-2.5 text-slate-900 dark:text-white pointer-events-none"
+          style={{ transform: 'translateX(-50%)' }}
         />
 
         {/* Floating badge – top left */}
-        <div className="absolute left-4 top-4 z-[100] flex items-center gap-2 map-overlay rounded-xl px-3 py-2 text-xs font-medium neon-pulse">
-          <Layers className="h-3.5 w-3.5 text-blue-400" />
-          <span className="text-slate-900 dark:text-white font-semibold">{filtered.length}</span>
-          <span className="text-slate-500 dark:text-slate-400">incidents</span>
-          <span className="text-slate-400 mx-1">·</span>
-          <span className="text-slate-900 dark:text-white font-semibold">{clusters.length}</span>
-          <span className="text-slate-500 dark:text-slate-400">clusters</span>
-          <span className="text-slate-400 mx-1">·</span>
-          <span className="text-slate-900 dark:text-white font-semibold">{filteredHotspots.length}</span>
-          <span className="text-slate-500 dark:text-slate-400">zones</span>
+        <div className="absolute left-4 top-4 z-[10] flex items-center gap-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs font-medium shadow-md">
+          <Layers className="h-4 w-4 text-blue-500" />
+          <span className="text-slate-900 dark:text-white font-bold">{filtered.length}</span>
+          <span className="text-slate-600 dark:text-slate-400">incidents</span>
+          <span className="text-slate-300 dark:text-slate-600">·</span>
+          <span className="text-slate-900 dark:text-white font-bold">{clusters.length}</span>
+          <span className="text-slate-600 dark:text-slate-400">clusters</span>
+          <span className="text-slate-300 dark:text-slate-600">·</span>
+          <span className="text-slate-900 dark:text-white font-bold">{filteredHotspots.length}</span>
+          <span className="text-slate-600 dark:text-slate-400">zones</span>
         </div>
 
         {/* Layer toggles – top right */}
-        <div className="absolute right-4 top-4 z-[100] flex flex-col gap-2">
+        <div className="absolute right-4 top-4 z-[10] flex flex-col gap-2">
           <button
             onClick={() => setShowCrimes((s) => !s)}
-            className={`flex items-center gap-2 map-overlay rounded-xl px-3 py-2 text-xs font-semibold transition-all btn-press border ${
+            className={`flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold transition-all btn-press border shadow-md backdrop-blur ${
               showCrimes
-                ? 'border-blue-500/40 text-slate-900 dark:text-white bg-blue-600/10 dark:bg-blue-600/20'
-                : 'border-slate-300 dark:border-slate-600/40 text-slate-500 dark:text-slate-400'
+                ? 'bg-blue-600 text-white border-blue-500'
+                : 'bg-white/90 dark:bg-slate-900/90 border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400'
             }`}
           >
-            {showCrimes ? <Eye className="h-3.5 w-3.5 text-blue-400" /> : <EyeOff className="h-3.5 w-3.5" />}
+            {showCrimes ? <Eye className="h-3.5 w-3.5 text-white" /> : <EyeOff className="h-3.5 w-3.5" />}
             Crimes
           </button>
           <button
             onClick={() => setShowHotspots((s) => !s)}
-            className={`flex items-center gap-2 map-overlay rounded-xl px-3 py-2 text-xs font-semibold transition-all btn-press border ${
+            className={`flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold transition-all btn-press border shadow-md backdrop-blur ${
               showHotspots
-                ? 'border-orange-500/40 text-slate-900 dark:text-white bg-orange-600/10 dark:bg-orange-600/20'
-                : 'border-slate-300 dark:border-slate-600/40 text-slate-500 dark:text-slate-400'
+                ? 'bg-orange-600 text-white border-orange-500'
+                : 'bg-white/90 dark:bg-slate-900/90 border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400'
             }`}
           >
-            {showHotspots ? <Eye className="h-3.5 w-3.5 text-orange-400" /> : <EyeOff className="h-3.5 w-3.5" />}
+            {showHotspots ? <Eye className="h-3.5 w-3.5 text-white" /> : <EyeOff className="h-3.5 w-3.5" />}
             Zones
           </button>
         </div>
 
         {/* Legend – bottom left */}
-        <div className="absolute bottom-4 left-4 z-[100] map-overlay rounded-xl px-3 py-2.5 text-xs space-y-1.5">
-          <p className="font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-1.5 mb-2">
-            <ZoomIn className="h-3 w-3 text-blue-400" /> Severity
+        <div className="absolute bottom-4 left-4 z-[10] bg-white/90 dark:bg-slate-900/90 backdrop-blur border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-xs space-y-1.5 shadow-md">
+          <p className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5 mb-1.5">
+            <ZoomIn className="h-3.5 w-3.5 text-blue-500" /> Severity
           </p>
           {[['#ef4444','Critical'],['#f97316','High'],['#eab308','Medium'],['#22c55e','Low']].map(([col, lbl]) => (
-            <div key={lbl} className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
-              <span className="h-2.5 w-2.5 rounded-full shrink-0" style={{ background: col, boxShadow: `0 0 6px ${col}` }} />
+            <div key={lbl} className="flex items-center gap-2 text-slate-600 dark:text-slate-300 font-medium">
+              <span className="h-2.5 w-2.5 rounded-full shrink-0" style={{ background: col }} />
               {lbl}
             </div>
           ))}
-          <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 border-t border-slate-200 dark:border-slate-700/50 pt-1.5 mt-1">
-            <span className="h-2.5 w-2.5 rounded-full border-2 border-dashed border-orange-400 shrink-0" />
-            Hotspot
+          <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300 font-medium border-t border-slate-200 dark:border-slate-700 pt-1.5 mt-1">
+            <span className="h-2.5 w-2.5 rounded-full border-2 border-dashed border-orange-500 shrink-0" />
+            Hotspot Zone
           </div>
         </div>
 
         {/* Attribution */}
-        <div className="absolute bottom-4 right-4 z-[100] text-[10px] text-slate-400 dark:text-slate-600">
-          © OpenStreetMap © CARTO
+        <div className="absolute bottom-3 right-4 z-[10] text-[10px] font-medium text-slate-500 dark:text-slate-400 bg-white/70 dark:bg-slate-900/70 px-2 py-0.5 rounded-md backdrop-blur">
+          © OpenStreetMap contributors
         </div>
       </div>
 
       {/* ── Bottom Summary Panel ─────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
 
-        {/* Stat cards */}
+        {/* Stat cards (Calm at rest, Pops on Hover) */}
         <div className="lg:col-span-4 grid grid-cols-2 gap-3">
           {[
-            { icon: <Activity className="h-5 w-5" />, label: 'Total Crimes',   value: filtered.length,          color: '#3b82f6', glow: 'glow-blue',   border: 'border-blue-500/20' },
-            { icon: <Flame className="h-5 w-5" />,    label: 'Critical',        value: bySeverity.critical,      color: '#ef4444', glow: 'glow-red',    border: 'border-red-500/20' },
-            { icon: <AlertTriangle className="h-5 w-5" />, label: 'High Risk',  value: bySeverity.high,          color: '#f97316', glow: 'glow-orange', border: 'border-orange-500/20' },
-            { icon: <Target className="h-5 w-5" />,   label: 'Hotspot Zones',   value: filteredHotspots.length,  color: '#8b5cf6', glow: 'glow-purple', border: 'border-purple-500/20' },
-          ].map(({ icon, label, value, color, glow, border }) => (
-            <div key={label} className={`card-3d glass-deep rounded-2xl border ${border} ${glow} p-4 flex flex-col gap-3 cursor-default`}>
+            { icon: <Activity className="h-5 w-5" />, label: 'Total Crimes',   value: filtered.length,          color: '#3b82f6', border: 'border-blue-200 dark:border-blue-500/30' },
+            { icon: <Flame className="h-5 w-5" />,    label: 'Critical',        value: bySeverity.critical,      color: '#ef4444', border: 'border-red-200 dark:border-red-500/30' },
+            { icon: <AlertTriangle className="h-5 w-5" />, label: 'High Risk',  value: bySeverity.high,          color: '#f97316', border: 'border-orange-200 dark:border-orange-500/30' },
+            { icon: <Target className="h-5 w-5" />,   label: 'Hotspot Zones',   value: filteredHotspots.length,  color: '#8b5cf6', border: 'border-purple-200 dark:border-purple-500/30' },
+          ].map(({ icon, label, value, color, border }) => (
+            <div
+              key={label}
+              className={`bg-white dark:bg-slate-900/90 rounded-2xl border ${border} p-4 flex flex-col gap-3 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md cursor-default`}
+            >
               <div className="flex items-center justify-between">
-                <span style={{ color }} className="opacity-80">{icon}</span>
+                <span style={{ color }}>{icon}</span>
                 <ChevronRight className="h-3.5 w-3.5 text-slate-400" />
               </div>
               <div>
-                <p className="text-3xl font-bold tabular-nums tracking-tight stat-3d" style={{ color }}>
+                <p className="text-2xl font-bold tabular-nums tracking-tight text-slate-900 dark:text-white">
                   {value.toLocaleString()}
                 </p>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-medium">{label}</p>
+                <p className="text-xs font-semibold text-slate-600 dark:text-slate-400 mt-0.5">{label}</p>
               </div>
             </div>
           ))}
         </div>
 
         {/* Severity breakdown */}
-        <div className="lg:col-span-3 glass-deep rounded-2xl border border-slate-200 dark:border-slate-700/40 p-4 card-3d">
+        <div className="lg:col-span-3 bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 shadow-sm">
           <div className="flex items-center gap-2 mb-4">
-            <div className="p-1.5 rounded-lg bg-red-500/15 border border-red-500/20">
-              <Shield className="h-4 w-4 text-red-400" />
+            <div className="p-1.5 rounded-lg bg-red-500/15">
+              <Shield className="h-4 w-4 text-red-600 dark:text-red-400" />
             </div>
-            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Severity Breakdown</h3>
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white">Severity Breakdown</h3>
           </div>
           <div className="space-y-3">
             {(['critical', 'high', 'medium', 'low'] as const).map((s) => {
@@ -502,20 +499,20 @@ export default function CrimeMap() {
               const col = sevColor(s);
               return (
                 <div key={s}>
-                  <div className="flex items-center justify-between mb-1.5">
+                  <div className="flex items-center justify-between mb-1">
                     <div className="flex items-center gap-2">
-                      <span className="h-2 w-2 rounded-full" style={{ background: col, boxShadow: `0 0 6px ${col}` }} />
-                      <span className="text-xs font-semibold text-slate-600 dark:text-slate-300 capitalize">{s}</span>
+                      <span className="h-2 w-2 rounded-full" style={{ background: col }} />
+                      <span className="text-xs font-bold text-slate-700 dark:text-slate-300 capitalize">{s}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold tabular-nums" style={{ color: col }}>{v}</span>
-                      <span className="text-[10px] text-slate-500 dark:text-slate-500">{pct}%</span>
+                      <span className="text-xs font-bold tabular-nums text-slate-900 dark:text-white">{v}</span>
+                      <span className="text-[10px] font-semibold text-slate-500">{pct}%</span>
                     </div>
                   </div>
-                  <div className="h-2 w-full rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
+                  <div className="h-2 w-full rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
                     <div
-                      className="h-full rounded-full transition-all duration-1000"
-                      style={{ width: `${pct}%`, background: `linear-gradient(90deg, ${col}60, ${col})`, boxShadow: `0 0 8px ${col}60` }}
+                      className="h-full rounded-full transition-all duration-700"
+                      style={{ width: `${pct}%`, background: col }}
                     />
                   </div>
                 </div>
@@ -525,12 +522,12 @@ export default function CrimeMap() {
         </div>
 
         {/* Top crime types */}
-        <div className="lg:col-span-3 glass-deep rounded-2xl border border-slate-200 dark:border-slate-700/40 p-4 card-3d">
+        <div className="lg:col-span-3 bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 shadow-sm">
           <div className="flex items-center gap-2 mb-4">
-            <div className="p-1.5 rounded-lg bg-purple-500/15 border border-purple-500/20">
-              <BarChart3 className="h-4 w-4 text-purple-400" />
+            <div className="p-1.5 rounded-lg bg-purple-500/15">
+              <BarChart3 className="h-4 w-4 text-purple-600 dark:text-purple-400" />
             </div>
-            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Top Crime Types</h3>
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white">Top Crime Types</h3>
           </div>
           {byType.length > 0 ? (
             <div className="space-y-2.5">
@@ -540,28 +537,28 @@ export default function CrimeMap() {
                 return (
                   <div key={type}>
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-xs text-slate-600 dark:text-slate-300 truncate max-w-[68%]">{type}</span>
-                      <span className="text-xs font-semibold tabular-nums" style={{ color: col }}>{pct}%</span>
+                      <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate max-w-[68%]">{type}</span>
+                      <span className="text-xs font-bold tabular-nums" style={{ color: col }}>{pct}%</span>
                     </div>
-                    <div className="h-1.5 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
-                      <div className="h-full rounded-full transition-all duration-1000" style={{ width: `${pct}%`, background: col, boxShadow: `0 0 6px ${col}60` }} />
+                    <div className="h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                      <div className="h-full rounded-full transition-all duration-700" style={{ width: `${pct}%`, background: col }} />
                     </div>
                   </div>
                 );
               })}
             </div>
           ) : (
-            <p className="text-sm text-slate-500 text-center py-4">No data available</p>
+            <p className="text-sm text-slate-500 text-center py-4 font-medium">No data available</p>
           )}
         </div>
 
         {/* Hot zones */}
-        <div className="lg:col-span-2 glass-deep rounded-2xl border border-slate-200 dark:border-slate-700/40 p-4 card-3d">
+        <div className="lg:col-span-2 bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 shadow-sm">
           <div className="flex items-center gap-2 mb-4">
-            <div className="p-1.5 rounded-lg bg-orange-500/15 border border-orange-500/20">
-              <TrendingUp className="h-4 w-4 text-orange-400" />
+            <div className="p-1.5 rounded-lg bg-orange-500/15">
+              <Activity className="h-4 w-4 text-orange-600 dark:text-orange-400" />
             </div>
-            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Hot Zones</h3>
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white">Hot Zones</h3>
           </div>
           {filteredHotspots.length > 0 ? (
             <div className="space-y-2">
@@ -569,21 +566,21 @@ export default function CrimeMap() {
                 const col = riskColor(hs.risk_level);
                 const isTop = hs.id === topHotspot?.id;
                 return (
-                  <div key={hs.id} className={`flex items-center gap-2 rounded-xl px-2.5 py-2 transition-all ${isTop ? 'bg-red-500/10 border border-red-500/20' : 'bg-slate-100 dark:bg-slate-800/40 hover:bg-slate-200 dark:hover:bg-slate-700/40'}`}>
-                    <span className="h-2 w-2 rounded-full shrink-0" style={{ background: col, boxShadow: `0 0 6px ${col}` }} />
+                  <div key={hs.id} className={`flex items-center gap-2 rounded-xl px-2.5 py-2 transition-all ${isTop ? 'bg-red-50 dark:bg-red-500/15 border border-red-200 dark:border-red-500/30' : 'bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-800'}`}>
+                    <span className="h-2 w-2 rounded-full shrink-0" style={{ background: col }} />
                     <div className="min-w-0 flex-1">
-                      <p className="text-xs font-medium text-slate-900 dark:text-white truncate leading-tight">{hs.area_name}</p>
-                      <p className="text-[10px] text-slate-500">{hs.crime_count} crimes</p>
+                      <p className="text-xs font-bold text-slate-900 dark:text-white truncate leading-tight">{hs.area_name}</p>
+                      <p className="text-[10px] font-medium text-slate-500 dark:text-slate-400">{hs.crime_count} crimes</p>
                     </div>
                   </div>
                 );
               })}
               {filteredHotspots.length > 5 && (
-                <p className="text-center text-[11px] text-slate-500 pt-1">+{filteredHotspots.length - 5} more zones</p>
+                <p className="text-center text-[11px] font-semibold text-slate-500 pt-1">+{filteredHotspots.length - 5} more zones</p>
               )}
             </div>
           ) : (
-            <p className="text-xs text-slate-500 text-center py-4">No zones found</p>
+            <p className="text-xs font-medium text-slate-500 text-center py-4">No zones found</p>
           )}
         </div>
 

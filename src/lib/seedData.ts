@@ -1,37 +1,8 @@
-import { supabase } from './supabase';
+import { supabase, isSupabaseConfigured } from './supabase';
+import { mockStore } from './mockStore';
+import { CITIES, CITIES_COORDINATES, AREA_NAMES, CRIME_TYPES, ALERT_TYPES, SEVERITY_LEVELS } from '../types';
 
-const CRIME_TYPES = ['Theft', 'Robbery', 'Assault', 'Vehicle Theft', 'Cyber Crime', 'Burglary', 'Vandalism', 'Drug Offense', 'Fraud', 'Harassment', 'Domestic Violence', 'Homicide'] as const;
-const SEVERITY_LEVELS = ['low', 'medium', 'high', 'critical'] as const;
-
-const CITIES_COORDINATES: Record<string, { lat: number; lng: number }> = {
-  Ahmedabad: { lat: 23.0225, lng: 72.5714 },
-  Surat: { lat: 21.1702, lng: 72.8311 },
-  Vadodara: { lat: 22.3072, lng: 73.1812 },
-  Rajkot: { lat: 22.3039, lng: 70.8022 },
-  Gandhinagar: { lat: 23.2156, lng: 72.6369 },
-  Mumbai: { lat: 19.076, lng: 72.8777 },
-  Delhi: { lat: 28.7041, lng: 77.1025 },
-  Bangalore: { lat: 12.9716, lng: 77.5946 },
-  Chennai: { lat: 13.0827, lng: 80.2707 },
-  Kolkata: { lat: 22.5726, lng: 88.3639 },
-};
-
-const CITIES = Object.keys(CITIES_COORDINATES);
-
-const AREA_NAMES = [
-  'Maninagar', 'Navrangpura', 'Satellite', 'Bopal', 'Paldi', 'Vastrapur',
-  'Thaltej', 'Nikol', 'Chandkheda', 'Bapunagar', 'Isanpur', 'Gota',
-  'Odhav', 'Sarkhej', 'Vasna', 'Adajan', 'Varachha', 'Katargam',
-  'Vesu', 'City Light', 'Alkapuri', 'Fatehgunj', 'Sayajigunj',
-  'Waghodia', 'Kalawad Road', 'Kotecha Chowk', 'Race Course',
-  'University Road', 'Sector 7', 'Sector 11', 'Sector 16', 'Sector 21',
-  'Infocity', 'Chandlodiya', 'Kankaria', 'Lal Darwaja', 'Ellis Bridge',
-  'Ashram Road', 'C.G. Road', 'S.G. Highway',
-];
-
-const ALERT_TYPES = ['High Crime Alert', 'Theft Alert', 'Assault Alert', 'Emergency Alert', 'Vehicle Theft Alert', 'Drug Activity Alert'];
-
-const rand = <T>(arr: readonly T[]): T => arr[Math.floor(Math.random() * arr.length)];
+const rand = <T>(arr: readonly T[] | T[]): T => arr[Math.floor(Math.random() * arr.length)];
 const randFloat = (base: number, spread: number) => base + (Math.random() - 0.5) * spread;
 
 function randomDate(monthsBack = 18): string {
@@ -68,26 +39,33 @@ const DESCRIPTIONS: Record<string, string[]> = {
 };
 
 export async function autoSeedIfEmpty(): Promise<boolean> {
-  const { count } = await supabase.from('crimes').select('*', { count: 'exact', head: true });
-  if ((count || 0) > 0) return false;
-  await seedCrimes(500);
-  await seedAlerts(30);
-  return true;
+  if (!isSupabaseConfigured) {
+    return false;
+  }
+  try {
+    const { count } = await supabase.from('crimes').select('*', { count: 'exact', head: true });
+    if ((count || 0) > 0) return false;
+    await seedCrimes(500);
+    await seedAlerts(30);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 export async function seedCrimes(count = 500): Promise<void> {
   const crimes = [];
   for (let i = 0; i < count; i++) {
     const city = rand(CITIES);
-    const base = CITIES_COORDINATES[city];
+    const base = CITIES_COORDINATES[city] || { lat: 23.0225, lng: 72.5714 };
     const crimeType = rand(CRIME_TYPES);
     const descs = DESCRIPTIONS[crimeType] || ['Incident reported'];
     crimes.push({
       crime_type: crimeType,
       crime_date: randomDate(18),
       crime_time: randomTime(),
-      latitude: randFloat(base.lat, 0.1),
-      longitude: randFloat(base.lng, 0.1),
+      latitude: Number(randFloat(base.lat, 0.1).toFixed(6)),
+      longitude: Number(randFloat(base.lng, 0.1).toFixed(6)),
       area_name: rand(AREA_NAMES),
       city,
       description: rand(descs),
@@ -95,6 +73,17 @@ export async function seedCrimes(count = 500): Promise<void> {
       status: rand(['open', 'investigating', 'resolved', 'closed'] as const),
     });
   }
+
+  if (!isSupabaseConfigured) {
+    mockStore.setCrimes(crimes.map((c, i) => ({
+      ...c,
+      id: `crime-seeded-${i}`,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })));
+    return;
+  }
+
   for (let i = 0; i < crimes.length; i += 100) {
     const { error } = await supabase.from('crimes').insert(crimes.slice(i, i + 100));
     if (error) throw error;
@@ -105,19 +94,31 @@ export async function seedAlerts(count = 30): Promise<void> {
   const alerts = [];
   for (let i = 0; i < count; i++) {
     const city = rand(CITIES);
-    const base = CITIES_COORDINATES[city];
+    const base = CITIES_COORDINATES[city] || { lat: 23.0225, lng: 72.5714 };
     const riskScore = Math.round(50 + Math.random() * 50);
     alerts.push({
       alert_type: rand(ALERT_TYPES),
       area_name: rand(AREA_NAMES),
-      latitude: randFloat(base.lat, 0.05),
-      longitude: randFloat(base.lng, 0.05),
+      latitude: Number(randFloat(base.lat, 0.05).toFixed(6)),
+      longitude: Number(randFloat(base.lng, 0.05).toFixed(6)),
       risk_score: riskScore,
-      severity: riskScore >= 90 ? 'critical' : riskScore >= 70 ? 'high' : 'medium',
+      severity: (riskScore >= 90 ? 'critical' : riskScore >= 70 ? 'high' : 'medium') as 'critical' | 'high' | 'medium',
       message: `High risk area detected. Risk score: ${riskScore}%. Immediate patrol recommended.`,
       is_read: Math.random() > 0.6,
     });
   }
+
+  if (!isSupabaseConfigured) {
+    mockStore.setAlerts(alerts.map((a, i) => ({
+      ...a,
+      id: `alert-seeded-${i}`,
+      acknowledged_at: a.is_read ? new Date().toISOString() : null,
+      acknowledged_by: a.is_read ? 'Admin Officer' : null,
+      created_at: new Date().toISOString(),
+    })));
+    return;
+  }
+
   const { error } = await supabase.from('alerts').insert(alerts);
   if (error) throw error;
 }

@@ -4,7 +4,7 @@ import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
-import OSM from 'ol/source/OSM';
+import XYZ from 'ol/source/XYZ';
 import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
 import Circle from 'ol/geom/Circle';
@@ -144,7 +144,11 @@ export default function CrimeMap() {
   useEffect(() => {
     if (!mapRef.current || olMap.current) return;
 
-    
+    const tileSource = new XYZ({
+      url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+      maxZoom: 19,
+      crossOrigin: 'anonymous',
+    });
 
     const crimeSource   = new VectorSource();
     const hotspotSource = new VectorSource();
@@ -163,7 +167,7 @@ export default function CrimeMap() {
     olMap.current = new OLMap({
       target: mapRef.current,
       layers: [
-        new TileLayer({ source: new OSM() }),
+        new TileLayer({ source: tileSource }),
         hotspotLayerRef.current,
         crimeLayerRef.current,
       ],
@@ -207,6 +211,8 @@ export default function CrimeMap() {
       olMap.current?.updateSize();
     });
     resizeObserver.observe(mapRef.current);
+    requestAnimationFrame(() => olMap.current?.updateSize());
+    window.setTimeout(() => olMap.current?.updateSize(), 250);
 
     return () => {
       resizeObserver.disconnect();

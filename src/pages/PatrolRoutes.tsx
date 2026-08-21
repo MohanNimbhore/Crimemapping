@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { Route, Plus, Trash2, MapPin, Clock, Navigation, Flag, Activity, AlertTriangle, Crosshair } from 'lucide-react';
+import { Route, Plus, Trash2, MapPin, Clock, Navigation, Flag, Activity, AlertTriangle } from 'lucide-react';
 import { api } from '../lib/api';
 import type { Crime, Hotspot, PatrolRoute } from '../types';
 import { formatDate, formatDistance, formatDuration, getRiskLevelColor, getStatusColor } from '../lib/utils';
@@ -78,20 +78,32 @@ export default function PatrolRoutes() {
       const station = STATIONS[stationIdx];
       const { orderedHotspots, totalDistance, estimatedDuration } = nearestNeighborRoute({ lat: station.lat, lng: station.lng }, hotspots);
       const saved = await api.saveRoute({
-        name: routeName.trim(), station_latitude: station.lat, station_longitude: station.lng, station_name: station.name,
+        name: routeName.trim(),
+        station_name: station.name,
+        station_latitude: station.lat,
+        station_longitude: station.lng,
         hotspots: orderedHotspots.map((h) => ({ latitude: h.latitude, longitude: h.longitude, risk_level: h.risk_level, area_name: h.area_name })),
-        waypoints: [{ latitude: station.lat, longitude: station.lng, order: 0 }, ...orderedHotspots.map((h, i) => ({ latitude: h.latitude, longitude: h.longitude, order: i+1 })), { latitude: station.lat, longitude: station.lng, order: orderedHotspots.length+1 }],
-        total_distance: totalDistance, estimated_duration: estimatedDuration, status: 'active',
+        waypoints: [
+          { latitude: station.lat, longitude: station.lng, order: 0 },
+          ...orderedHotspots.map((h, i) => ({ latitude: h.latitude, longitude: h.longitude, order: i + 1 })),
+          { latitude: station.lat, longitude: station.lng, order: orderedHotspots.length + 1 },
+        ],
+        total_distance: totalDistance,
+        estimated_duration: estimatedDuration,
+        status: 'active',
       });
-      setRoutes((p) => [saved, ...p]); setRouteName('');
+      setRoutes((p) => [saved, ...p]);
+      setRouteName('');
     } catch (err) { console.error(err); }
     finally { setGenerating(false); }
   };
 
   const handleDelete = async (id: string) => {
     setDeletingId(id);
-    try { await api.deleteRoute(id); setRoutes((p) => p.filter((r) => r.id !== id)); }
-    catch (err) { console.error(err); }
+    try {
+      await api.deleteRoute(id);
+      setRoutes((p) => p.filter((r) => r.id !== id));
+    } catch (err) { console.error(err); }
     finally { setDeletingId(null); }
   };
 
@@ -103,150 +115,149 @@ export default function PatrolRoutes() {
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Header */}
-      <div className="flex items-center gap-3">
-        <div className="p-2 rounded-xl bg-blue-500/15 glow-blue border border-blue-500/20">
-          <Navigation className="h-5 w-5 text-blue-400" />
-        </div>
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Patrol Routes</h1>
-          <p className="text-sm text-slate-400">Nearest-neighbor optimized patrol routes from stations to hotspots</p>
+      <div className="flex items-center justify-between flex-wrap gap-4">
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-xl bg-blue-500/15 border border-blue-500/20">
+            <Route className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Patrol Routes</h1>
+            <p className="text-sm font-medium text-slate-600 dark:text-slate-400 mt-0.5">Optimized patrol path generator using nearest-neighbor routing</p>
+          </div>
         </div>
       </div>
 
-      {/* Generator */}
-      <div className="glass-deep rounded-2xl border border-blue-500/20 neon-pulse p-5">
+      {/* Generator form */}
+      <div className="bg-white dark:bg-slate-900/90 rounded-2xl border border-blue-200 dark:border-blue-500/30 p-5 shadow-sm">
         <div className="flex items-center gap-2.5 mb-4">
-          <div className="p-1.5 rounded-lg bg-blue-500/15 border border-blue-500/20">
-            <Navigation className="h-4 w-4 text-blue-400" />
+          <div className="p-1.5 rounded-lg bg-blue-500/15">
+            <Navigation className="h-4 w-4 text-blue-600 dark:text-blue-400" />
           </div>
-          <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Generate New Route</h3>
+          <h3 className="text-sm font-bold text-slate-900 dark:text-white">Generate New Route</h3>
         </div>
         <div className="flex flex-wrap items-end gap-3">
           <div className="flex-1 min-w-[200px]">
-            <label className="mb-1.5 block text-xs font-semibold text-slate-400">Police Station</label>
+            <label className="mb-1.5 block text-xs font-bold text-slate-700 dark:text-slate-300">Police Station</label>
             <select
               value={stationIdx} onChange={(e) => setStationIdx(Number(e.target.value))}
-              className="w-full rounded-xl glass-deep border border-slate-200 dark:border-slate-700/50 px-3 py-2 text-sm text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none appearance-none"
+              className="w-full rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 px-3.5 py-2.5 text-sm font-semibold text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none appearance-none shadow-sm"
             >
-              {STATIONS.map((s, i) => <option key={s.name} value={i}>{s.name}</option>)}
+              {STATIONS.map((s, i) => <option key={s.name} value={i} className="text-slate-900 dark:text-white bg-white dark:bg-slate-900">{s.name}</option>)}
             </select>
           </div>
           <div className="flex-1 min-w-[180px]">
-            <label className="mb-1.5 block text-xs font-semibold text-slate-400">Route Name</label>
+            <label className="mb-1.5 block text-xs font-bold text-slate-700 dark:text-slate-300">Route Name</label>
             <input
               type="text" placeholder="e.g. Night Patrol – Sector A" value={routeName}
               onChange={(e) => setRouteName(e.target.value)}
-              className="w-full rounded-xl glass-deep border border-slate-200 dark:border-slate-700/50 px-3 py-2 text-sm text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500"
+              className="w-full rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 px-3.5 py-2.5 text-sm font-medium text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500 shadow-sm"
             />
           </div>
           <button
             onClick={handleGenerate} disabled={generating || !routeName.trim() || hotspots.length === 0}
-            className="flex items-center gap-2 rounded-xl bg-blue-600 border border-blue-500/30 px-4 py-2 text-sm font-semibold text-slate-900 dark:text-white hover:bg-blue-500 disabled:opacity-60 btn-press transition-all"
+            className="flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 px-4 py-2.5 text-sm font-bold text-white shadow-md shadow-blue-500/20 disabled:opacity-60 btn-press transition-all"
           >
-            {generating ? <ButtonLoader /> : <Plus className="h-4 w-4" />}
+            {generating ? <ButtonLoader /> : <Plus className="h-4 w-4 text-white" />}
             Generate Route
           </button>
         </div>
         {hotspots.length === 0 && (
-          <p className="mt-3 text-xs text-amber-400 flex items-center gap-1.5">
+          <p className="mt-3 text-xs font-semibold text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
             <AlertTriangle className="h-3.5 w-3.5" /> No hotspots available. Detect hotspots first.
           </p>
         )}
       </div>
 
-      {/* Stat cards */}
+      {/* Calm Resting Stat cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         {[
-          { label: 'Active Routes',      value: activeRoutes,       icon: <Route className="h-5 w-5" />,        color: '#3b82f6', glow: 'glow-blue',   border: 'border-blue-500/20' },
-          { label: 'Available Hotspots', value: hotspots.length,    icon: <MapPin className="h-5 w-5" />,       color: '#f97316', glow: 'glow-orange', border: 'border-orange-500/20' },
-          { label: 'Total Patrol Time',  value: formatDuration(totalPatrolTime), icon: <Clock className="h-5 w-5" />, color: '#8b5cf6', glow: 'glow-purple', border: 'border-purple-500/20' },
-        ].map(({ label, value, icon, color, glow, border }, i) => (
-          <div key={label} className={`card-3d glass-deep rounded-2xl border ${border} ${glow} p-5 animate-fade-in-up`} style={{ animationDelay: `${i * 60}ms` }}>
+          { label: 'Active Routes',      value: activeRoutes,       icon: <Route className="h-5 w-5" />,        color: '#3b82f6', border: 'border-blue-200 dark:border-blue-500/30' },
+          { label: 'Available Hotspots', value: hotspots.length,    icon: <MapPin className="h-5 w-5" />,       color: '#f97316', border: 'border-orange-200 dark:border-orange-500/30' },
+          { label: 'Total Patrol Time',  value: formatDuration(totalPatrolTime), icon: <Clock className="h-5 w-5" />, color: '#8b5cf6', border: 'border-purple-200 dark:border-purple-500/30' },
+        ].map(({ label, value, icon, color, border }) => (
+          <div
+            key={label}
+            className={`card-lift bg-white dark:bg-slate-900/90 rounded-2xl border ${border} p-5 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md cursor-default`}
+          >
             <div className="flex items-center justify-between mb-3">
               <span style={{ color }}>{icon}</span>
-              <div className="h-1.5 w-1.5 rounded-full animate-pulse-subtle" style={{ background: color }} />
+              <div className="h-2 w-2 rounded-full" style={{ background: color }} />
             </div>
-            <p className="text-2xl font-bold stat-3d" style={{ color }}>{value}</p>
-            <p className="text-xs text-slate-400 mt-1 font-medium">{label}</p>
+            <p className="text-2xl font-bold text-slate-900 dark:text-white">{value}</p>
+            <p className="text-xs font-semibold text-slate-600 dark:text-slate-400 mt-1">{label}</p>
           </div>
         ))}
       </div>
 
       {/* Route cards */}
       {routes.length === 0 ? (
-        <div className="glass-deep rounded-2xl border border-slate-200 dark:border-slate-700/50 flex flex-col items-center justify-center py-24 text-center">
-          <div className="p-4 rounded-full bg-slate-100 dark:bg-slate-800/60 mb-4"><Route className="h-10 w-10 text-slate-600" /></div>
-          <h3 className="text-lg font-semibold text-slate-600 dark:text-slate-300">No patrol routes created</h3>
-          <p className="text-sm text-slate-500 mt-1 max-w-md">Select a station, name your route, and click "Generate Route".</p>
+        <div className="bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center py-20 text-center shadow-sm">
+          <div className="p-4 rounded-full bg-slate-100 dark:bg-slate-800 mb-4"><Route className="h-10 w-10 text-slate-400" /></div>
+          <h3 className="text-lg font-bold text-slate-800 dark:text-slate-200">No patrol routes created</h3>
+          <p className="text-sm font-medium text-slate-600 dark:text-slate-400 mt-1 max-w-md">Select a station, name your route, and click "Generate Route".</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          {routes.map((route, i) => (
+          {routes.map((route) => (
             <div
               key={route.id}
-              className="glass-deep rounded-2xl border border-slate-200 dark:border-slate-700/50 p-5 card-3d animate-fade-in-up"
-              style={{ animationDelay: `${Math.min(i * 50, 400)}ms` }}
+              className="bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 card-lift shadow-sm"
             >
               {/* Card header */}
               <div className="flex items-start justify-between mb-4">
                 <div>
                   <h3 className="text-base font-bold text-slate-900 dark:text-white">{route.name}</h3>
-                  <p className="text-xs text-slate-400 flex items-center gap-1.5 mt-1">
-                    <MapPin className="h-3.5 w-3.5" />{route.station_name}
+                  <p className="text-xs font-semibold text-slate-600 dark:text-slate-400 flex items-center gap-1.5 mt-1">
+                    <MapPin className="h-3.5 w-3.5 text-blue-500" />{route.station_name}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className={`inline-block rounded-full border px-2 py-0.5 text-xs font-semibold capitalize ${getStatusColor(route.status)}`}>{route.status}</span>
+                  <span className={`inline-block rounded-full border px-2.5 py-0.5 text-xs font-bold capitalize ${getStatusColor(route.status)}`}>{route.status}</span>
                   <button
-                    onClick={() => handleDelete(route.id)} disabled={deletingId === route.id}
-                    className="inline-flex items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700/50 p-1.5 text-red-400 hover:bg-red-500/15 hover:border-red-500/40 transition-all btn-press disabled:opacity-60"
+                    onClick={() => handleDelete(route.id)}
+                    disabled={deletingId === route.id}
+                    className="p-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/15 transition-all btn-press disabled:opacity-50"
                   >
                     {deletingId === route.id ? <ButtonLoader /> : <Trash2 className="h-4 w-4" />}
                   </button>
                 </div>
               </div>
 
-              {/* Mini stats */}
-              <div className="grid grid-cols-3 gap-2 mb-4">
-                {[
-                  { label: 'Distance', value: route.total_distance !== null ? formatDistance(route.total_distance) : '—' },
-                  { label: 'Duration', value: route.estimated_duration !== null ? formatDuration(route.estimated_duration) : '—' },
-                  { label: 'Stops', value: String(route.hotspots.length) },
-                ].map(({ label, value }) => (
-                  <div key={label} className="rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/40 p-2.5 text-center">
-                    <p className="text-xs text-slate-500">{label}</p>
-                    <p className="text-sm font-bold text-slate-900 dark:text-white mt-0.5">{value}</p>
-                  </div>
-                ))}
-              </div>
-
-              {/* Route order */}
-              <div>
-                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Route Order</p>
-                <div className="space-y-1.5">
-                  <div className="flex items-center gap-2 text-sm">
-                    <Flag className="h-4 w-4 text-green-400 shrink-0" />
-                    <span className="text-slate-600 dark:text-slate-300">Start: {route.station_name}</span>
-                  </div>
-                  {route.hotspots.map((h, idx) => (
-                    <div key={idx} className="flex items-center gap-2 text-sm pl-1">
-                      <Crosshair className="h-4 w-4 text-blue-400 shrink-0" />
-                      <span className="text-slate-500 dark:text-slate-400">{idx + 1}. {h.area_name}</span>
-                      <span className={`inline-block rounded-full border px-1.5 py-0.5 text-xs font-medium capitalize ${getRiskLevelColor(h.risk_level)}`}>{h.risk_level}</span>
-                    </div>
-                  ))}
-                  <div className="flex items-center gap-2 text-sm">
-                    <Flag className="h-4 w-4 text-red-400 shrink-0" />
-                    <span className="text-slate-600 dark:text-slate-300">Return: {route.station_name}</span>
-                  </div>
+              {/* Stats */}
+              <div className="grid grid-cols-3 gap-2 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-800 mb-4">
+                <div>
+                  <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Distance</p>
+                  <p className="text-sm font-bold text-slate-900 dark:text-white mt-0.5">{formatDistance(route.total_distance)}</p>
+                </div>
+                <div>
+                  <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Duration</p>
+                  <p className="text-sm font-bold text-slate-900 dark:text-white mt-0.5">{formatDuration(route.estimated_duration)}</p>
+                </div>
+                <div>
+                  <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Hotspots</p>
+                  <p className="text-sm font-bold text-slate-900 dark:text-white mt-0.5">{route.hotspots?.length || 0} stops</p>
                 </div>
               </div>
 
-              {/* Footer */}
-              <div className="mt-4 pt-3 border-t border-slate-200 dark:border-slate-700/40 flex items-center justify-between text-xs text-slate-500">
-                <span className="flex items-center gap-1.5"><Activity className="h-3.5 w-3.5" />Created {formatDate(route.created_at)}</span>
-                <span>{crimes.length} crimes on record</span>
-              </div>
+              {/* Hotspots sequence */}
+              {route.hotspots && route.hotspots.length > 0 && (
+                <div>
+                  <p className="text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">Patrol Sequence:</p>
+                  <div className="space-y-1.5">
+                    {route.hotspots.map((h, j) => (
+                      <div key={j} className="flex items-center gap-2 text-xs">
+                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/60 font-bold text-blue-700 dark:text-blue-300 text-[10px]">
+                          {j + 1}
+                        </span>
+                        <span className="font-semibold text-slate-800 dark:text-slate-200 truncate">{h.area_name}</span>
+                        <span className={`ml-auto inline-block rounded-full border px-2 py-0.2 text-[10px] font-bold capitalize ${getRiskLevelColor(h.risk_level)}`}>
+                          {h.risk_level}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>

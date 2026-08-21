@@ -11,13 +11,14 @@ export default function Login() {
 
   const [tab, setTab] = useState<Tab>('login');
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('admin@crimemapper.com');
+  const [password, setPassword] = useState('admin123');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [info, setInfo] = useState('');
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
+
 
   useEffect(() => {
     const t = setTimeout(() => setMounted(true), 60);
@@ -212,14 +213,35 @@ export default function Login() {
 
           {/* Demo hint */}
           {tab === 'login' && (
-            <div className="mt-5 rounded-xl border border-slate-700/50 bg-slate-800/40 p-3">
-              <p className="text-center text-xs font-semibold text-slate-400 mb-1.5">Demo Credentials</p>
-              <div className="flex items-center justify-center gap-4 text-xs text-slate-500">
-                <span className="flex items-center gap-1">
-                  <Mail className="h-3 w-3" /> admin@crimemapper.com
+            <div
+              onClick={async () => {
+                setEmail('admin@crimemapper.com');
+                setPassword('admin123');
+                try {
+                  setLoading(true);
+                  await login('admin@crimemapper.com', 'admin123');
+                  navigate('/dashboard');
+                } catch {
+                  // ignore
+                } finally {
+                  setLoading(false);
+                }
+              }}
+              className="mt-5 rounded-xl border border-blue-500/30 bg-blue-500/10 hover:bg-blue-500/20 p-3.5 cursor-pointer transition-all duration-200 group"
+            >
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-xs font-semibold text-blue-400 flex items-center gap-1.5">
+                  <Zap className="h-3.5 w-3.5 text-blue-400 group-hover:scale-110 transition-transform" />
+                  Quick Demo Access (Click to Login)
                 </span>
-                <span className="flex items-center gap-1">
-                  <Lock className="h-3 w-3" /> admin123
+                <span className="text-[11px] text-blue-300 font-medium">Auto-login &rarr;</span>
+              </div>
+              <div className="flex items-center justify-between text-xs text-slate-400">
+                <span className="flex items-center gap-1 font-mono">
+                  <Mail className="h-3 w-3 text-slate-500" /> admin@crimemapper.com
+                </span>
+                <span className="flex items-center gap-1 font-mono">
+                  <Lock className="h-3 w-3 text-slate-500" /> admin123
                 </span>
               </div>
             </div>

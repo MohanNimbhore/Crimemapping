@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import {
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -17,6 +18,10 @@ const PIE_COLORS = ['#3b82f6','#f97316','#ef4444','#eab308','#8b5cf6','#22c55e',
 
 function riskBadgeClass(risk: string) {
   switch (risk) {
+    case 'high':   return 'bg-red-500/20 text-red-400 border-red-500/30';
+    case 'medium': return 'bg-orange-500/20 text-orange-400 border-orange-500/30';
+    case 'low':    return 'bg-green-500/20 text-green-400 border-green-500/30';
+    default:       return 'bg-slate-500/20 text-slate-400 border-slate-500/30';
     case 'high':   return 'bg-red-500/10 dark:bg-red-500/20 text-red-700 dark:text-red-300 border-red-300 dark:border-red-500/30';
     case 'medium': return 'bg-orange-500/10 dark:bg-orange-500/20 text-orange-700 dark:text-orange-300 border-orange-300 dark:border-orange-500/30';
     case 'low':    return 'bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-500/30';
